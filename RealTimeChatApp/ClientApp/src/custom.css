@@ -1,0 +1,27 @@
+﻿*,
+*:before,
+*:after {
+    margin: 0;
+    padding: 0;
+    background-color: lightgrey;
+}
+
+
+.container {
+    margin: 75px 0 0 auto;
+}
+
+.row {
+    height: 500px;
+    width: 800px;
+    background-color: #0366d6;
+}
+
+.title {
+    margin: 20px;
+    padding: 10px;
+    background-color:beige;
+   
+}
+
+
