@@ -3,29 +3,22 @@ import React, { useState } from 'react';
 import '../custom.css';
 
 const ChatPage = () => {
-    const [message, setMessage] = useState({});
-    const [user, setUser] = useState("Julia");
+    const [users, setUsers] = useState("Jon");
+    const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState();
-    const [value, setValue] = useState();
-
-    const handleChange = (event) => {
-        setInputText(event.target.value);
-        console.log(event.target.value);
-    }
+    const [inputValue, setInputValue] = useState();
 
     //set user to the login user
 
     const sendMessage = () => {
-        let updatedValue = {};
-        
+        let newMessage = {};
         if (inputText !== "") {
-          updatedValue = { "user": "inputText" };
-          setMessage(message => ({...message, ...updatedValue}));
-
+            newMessage = { User: users + ":", Message: inputText };
+            setMessages([...messages, newMessage]);
         } else {
             return false;
-        }     
-        //setValue("");
+        }
+        //setInputValue("");
     }
 
 
@@ -40,18 +33,28 @@ const ChatPage = () => {
             <div className="container-2 rounded">
                     <div className="row">
                         <div className="col-3 rounded">
-                            <p className="title rounded">ONLINE USERS</p>
+                        <p className="title rounded">ONLINE USERS</p>
+                        <div className="user">
+                            <p className="userName">{users}</p>
+                        </div>
                         </div>
                     <div className="col-9 bg-light rounded">
-                        <p className="message bg-light">{user}: {message}</p>
-                    </div>
-                    </div>
+                        {messages.map((message, index) => (
+                            <div className="message bg-light" key={index}>
+                                <p className="msg-user bg-light">{message.User}</p>
+                                <p className="msg-msg bg-light">{message.Message}</p>
+                            </div>
+                        ))}
+               
+                        </div>
+                </div>
+           
                 <div className="input-group">
-                    <input type="text" className="form-control" placeholder="Text here" value={value} onChange={handleChange} />
-                        <div class="input-group-append">
+                    <input type="text" className="form-control" placeholder="Text here" value={inputValue} onChange={(e) => setInputText(e.target.value)} />
+                    <div class="input-group-append">
                         <button class="btn btn-secondary" type="button" onClick={sendMessage}>Send</button>
                         </div>
-                    </div>
+                </div>
             </div>
       </div>
 

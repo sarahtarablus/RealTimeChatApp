@@ -44,11 +44,6 @@
     border-right: dashed grey 1px;
 }
 
-.col-9 {
-    //border: solid grey 1px;
-    padding: 10px;
-}
-
 .title {
     justify-content: center;
     margin: 20px;
@@ -62,6 +57,46 @@
     margin-top: 10px;    
 }
 
+.user {
+   background-color: #F0FFF0;
+}
 
+.userName {
+    background-color: #F0FFF0;
+    font-weight: bold;
+}
 
+.message {
+    display: flex;
+    justify-content: flex-start;
+}
 
+.msg-user {
+    padding-right: 15px;
+    font-weight: bold;
+}
+
+.msg-msg {
+    overflow-wrap: break-word;
+    padding-right: 25px;
+}
+
+.container-3 {
+    margin: auto;
+    margin-top: 70px;
+    width: 50%;
+}
+
+.login{
+    margin-top: 70px;
+    width: 53%;
+    background-color: lightgray;
+}
+
+.col-4 {
+    background-color: #F0FFF0;
+}
+
+.col-8 {
+    background-color: lightblue;
+}
