@@ -13,6 +13,8 @@ namespace RealTimeChatApp
     {
         public static void Main(string[] args)
         {
+            var message = new Messages();
+
             CreateHostBuilder(args).Build().Run();
         }
 

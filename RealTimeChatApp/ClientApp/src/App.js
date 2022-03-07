@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 //import { FetchData } from './components/FetchData';
 //import { Counter } from './components/Counter';
 import ChatPage from './components/ChatPage';
-import Home from './components/Login';
+import Login from './components/Login';
 
 
 
@@ -16,7 +16,7 @@ const App = () => {
    
     if (!isLoggedIn) {
         return (
-            <div><Home/></div>
+            <div><Login/></div>
         )
     } else {
         return(

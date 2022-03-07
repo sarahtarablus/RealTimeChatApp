@@ -25,18 +25,18 @@ const Login = () => {
     //    }
     //}
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    //const handleSubmit = async (e) => {
+    //    e.preventDefault();
 
-        try {
-            await Auth.signIn(username, password);
-            userHasAuthenticated(true);
-            history.push("/ChatPage");
+    //    try {
+    //        await Auth.signIn(username, password);
+    //        userHasAuthenticated(true);
+    //        history.push("/ChatPage");
 
-        } catch (err) {
-            alert(err.message);
-        }
-    }
+    //    } catch (err) {
+    //        alert(err.message);
+    //    }
+    //}
 
 
 
@@ -54,7 +54,7 @@ const Login = () => {
                            <label for="password">Password</label>
                            <input type="text" className="form-control" id="passwordInput" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                        </div>
-                       <button type="submit" className="btn btn-primary mx-sm-3 mb-2 mt-3" onClick={handleSubmit}>Login</button>
+                       <button type="submit" className="btn btn-primary mx-sm-3 mb-2 mt-3" >Login</button>
                                 <p className="or mx-sm-3 mb-1 mt-2">Don't have an account?</p>
                                 <button type="submit" className="signup btn mx-sm-1 mb-2 mt-1 text-primary">Signup</button>
                             </form>
@@ -69,4 +69,4 @@ const Login = () => {
   
 
 
-export default Home;
+export default Login;

@@ -3,8 +3,13 @@ namespace RealTimeChatApp
 {
     public class User
     {
-        public User()
-        {
-        }
+        public int _id { get; set; }
+        public string _name { get; set; }
+
+        //public User(string name)
+        //{
+        //    _name = name;
+        //}
+        
     }
 }

@@ -13,37 +13,29 @@ namespace RealTimeChatApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HomeController : ControllerBase
+    public class MessagesController : ControllerBase
     {
         
         [HttpGet]
-        public IActionResult ReadMessages()
+        public IActionResult Get()
         {
+            //List<Messages> messages = new List<Messages>();
+            //Messages msg = new Messages();
+            //msg._user = "Sarah";
+            //msg._text = "Hello Sarah!";
+
+            //messages.Add(msg);
             return Ok();
         }
 
         [HttpPost]
-        public IActionResult PostMessage(JObject payload)
+        public IActionResult Post([FromBody] Messages message)
         {
-            return Ok(payload);
-        }
-
-        [HttpGet]
-        public IActionResult GetUsers()
-        {
+            //List<Messages> messages = new List<Messages>();
+            //messages.Add(message);
             return Ok();
         }
 
-        [HttpGet]
-        public IActionResult GetSingleUser(int id)
-        {
-            return Ok();
-        }
-
-        [HttpPost]
-        public IActionResult CreateUser(JObject payload)
-        {
-            return Ok(payload);
-        }
+      
     }
 }
