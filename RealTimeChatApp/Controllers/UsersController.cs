@@ -12,8 +12,7 @@ namespace RealTimeChatApp.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
-    {
-        static List<User> users = new();
+    { 
 
         [HttpGet]
         public IEnumerable<User> Get()
@@ -21,21 +20,31 @@ namespace RealTimeChatApp.Controllers
             return users;
         }
 
+        static List<User> users = UsersList();
+
+        private static List<User> UsersList()
+        {
+            var userList = new List<User>();
+            userList.Add(new RealTimeChatApp.User { id = 10, name = "Jules" });
+            return userList;
+        }
+
         [HttpGet("id")]
         public IActionResult Get(int id)
         {
-            var userFound = users.Find(u => u._id == id);
-            if(userFound != null)
+            var ret = users.Find(u => u.id == id);
+            if(ret != null)
             {
-                return Ok(userFound);
+                return Ok(ret);
             }
             return NotFound("User not found");
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] User)
+        public void Post([FromBody] User user)
         {
-            return Ok();
+            user.id = users.Count;
+            users.Add(user);
         }
     }
 }

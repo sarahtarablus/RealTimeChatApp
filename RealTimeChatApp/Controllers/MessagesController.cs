@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace RealTimeChatApp.Controllers
 {
@@ -15,25 +14,18 @@ namespace RealTimeChatApp.Controllers
     [ApiController]
     public class MessagesController : ControllerBase
     {
-        
         [HttpGet]
-        public IActionResult Get()
+        public IEnumerable<Messages> Get()
         {
-            //List<Messages> messages = new List<Messages>();
-            //Messages msg = new Messages();
-            //msg._user = "Sarah";
-            //msg._text = "Hello Sarah!";
-
-            //messages.Add(msg);
-            return Ok();
+            return messages;
         }
 
+        static List<Messages> messages = new List<Messages>();
+
         [HttpPost]
-        public IActionResult Post([FromBody] Messages message)
+        public void Post([FromBody] Messages message)
         {
-            //List<Messages> messages = new List<Messages>();
-            //messages.Add(message);
-            return Ok();
+            messages.Add(message);
         }
 
       
