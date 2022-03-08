@@ -20,14 +20,8 @@ namespace RealTimeChatApp.Controllers
             return users;
         }
 
-        static List<User> users = UsersList();
+        static List<User> users = new List<User>();
 
-        private static List<User> UsersList()
-        {
-            var userList = new List<User>();
-            userList.Add(new RealTimeChatApp.User { id = 10, name = "Jules" });
-            return userList;
-        }
 
         [HttpGet("id")]
         public IActionResult Get(int id)
@@ -43,7 +37,7 @@ namespace RealTimeChatApp.Controllers
         [HttpPost]
         public void Post([FromBody] User user)
         {
-            user.id = users.Count;
+            //user.id = users.Count;
             users.Add(user);
         }
     }

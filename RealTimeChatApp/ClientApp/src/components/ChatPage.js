@@ -3,22 +3,43 @@ import React, { useState } from 'react';
 import '../custom.css';
 
 const ChatPage = () => {
-    const [users, setUsers] = useState("Jon");
+    const [users, setUsers] = useState( "Jon");
     const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState();
     const [inputValue, setInputValue] = useState();
 
-    //set user to the login user
+    const url = "https://localhost:5001/api/Messages";
 
-    const sendMessage = () => {
+    
+
+    const sendMessage = async () => {
         let newMessage = {};
+        let newMessage2 = {};
         if (inputText !== "") {
-            newMessage = { User: users + ":", Message: inputText };
+            newMessage = { User: users, Message: inputText };
             setMessages([...messages, newMessage]);
+            console.log(newMessage);
+
+            newMessage2 = { user: { id: 0, name: users }, text: inputText };
+          
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-type": "application/json" },
+                    body: JSON.stringify(newMessage2)
+                });
+                console.log(response)
+                return response;
+            } catch (err) {
+                console.log(err);
+                return err;
+            }
+
         } else {
             return false;
         }
-        //setInputValue("");
+       
     }
 
 
@@ -35,7 +56,7 @@ const ChatPage = () => {
                         <div className="col-3 rounded">
                         <p className="title rounded">ONLINE USERS</p>
                         <div className="user">
-                            <p className="userName">{users}</p>
+                                <p className="userName">{users}</p>                   
                         </div>
                         </div>
                     <div className="col-9 bg-light rounded">
