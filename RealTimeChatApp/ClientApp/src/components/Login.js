@@ -9,7 +9,9 @@ const Login = () => {
     const [logins, setLogins] = useState([{ User: "Jon", Password: "1234" }, { User: "Sarah", Password: "3425"}]);
     const [isRegistered, setIsRegistered] = useState();
 
-    const history = useHistory();
+
+
+    //const history = useHistory();
     
     //const Login = () => {
     //    let user = {};

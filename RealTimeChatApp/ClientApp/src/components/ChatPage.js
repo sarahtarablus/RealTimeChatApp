@@ -10,7 +10,33 @@ const ChatPage = () => {
 
     const url = "https://localhost:5001/api/Messages";
 
-    
+    const getMessages = async () => {
+        try {
+            const response = await fetch(url);
+            console.log(response)
+            return response;
+        } catch (err) {
+            console.log(err);
+            return err;
+        }
+    }
+
+
+    const postMessage = async (message) => {
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Content-type": "application/json" },
+                body: JSON.stringify(message)
+            }
+            );
+            console.log(response)
+            return response;
+        } catch (err) {
+            console.log(err);
+            return err;
+        }
+    }
 
     const sendMessage = async () => {
         let newMessage = {};
@@ -18,28 +44,12 @@ const ChatPage = () => {
         if (inputText !== "") {
             newMessage = { User: users, Message: inputText };
             setMessages([...messages, newMessage]);
-            console.log(newMessage);
-
             newMessage2 = { user: { id: 0, name: users }, text: inputText };
-          
 
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-type": "application/json" },
-                    body: JSON.stringify(newMessage2)
-                });
-                console.log(response)
-                return response;
-            } catch (err) {
-                console.log(err);
-                return err;
-            }
-
+            postMessage(newMessage2);
         } else {
             return false;
         }
-       
     }
 
 
