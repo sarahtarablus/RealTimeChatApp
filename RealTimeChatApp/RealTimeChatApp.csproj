@@ -12,6 +12,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.22" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="Moq" Version="4.17.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +24,8 @@
 
   <ItemGroup>
     <None Remove="Newtonsoft.Json" />
+    <None Remove="NUnit" />
+    <None Remove="Moq" />
   </ItemGroup>
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
