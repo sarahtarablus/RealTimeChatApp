@@ -67,9 +67,9 @@ namespace RealTimeChatApp.Controllers
         public IActionResult Post([FromBody] User user)
         {
             var index = _users.Count;
-            _usersRepository.Add(index,user);
+            _usersRepository.Add(index, user);
 
-            return CreatedAtRoute("DefaultApi", new { id = user.id, name = user.name, date = user.createdDate }, user);
+            return CreatedAtRoute("DefaultApi", new { id = user.Id, name = user.Name, createdDate = user.CreatedDate }, user);
         }
 
     }

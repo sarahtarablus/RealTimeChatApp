@@ -3,8 +3,11 @@ namespace RealTimeChatApp
 {
     public class Messages
     {
-        public User user { get; set; }
+        public int Id { get; set; }
+        public User userId { get; set; }
         public string text { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int ChannelId { get; set; }
         
     }
 }

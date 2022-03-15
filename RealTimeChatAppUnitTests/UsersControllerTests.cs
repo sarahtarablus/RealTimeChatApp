@@ -1,6 +1,10 @@
 ﻿using System.Collections;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using RealTimeChatApp;
+using RealTimeChatApp.Controllers;
+
 
 namespace RealTimeChatAppUnitTests
 {
@@ -12,12 +16,19 @@ namespace RealTimeChatAppUnitTests
         //}
 
         [Test]
-        public void PostMethodSetsLocationHeader()
+        public void Post_always_isNotNull()
         {
-            var mockUsersDictionary = new Mock<IDictionary>();
-            var mockUsersList = new Mock<IList>();
-            var usersController = new (mockUsersList, mockUsersDictionary);
-            
+            //Arrange
+            var mockRepository = new Mock<IUsersRepository>();
+            var usersController = new UsersController(mockRepository.Object);
+
+            //Action
+            IActionResult actionResult = usersController.Post(new User { id = 2, name = "Ron" });
+            //var createdResult = actionResult;
+
+
+            //Assert
+            //Assert.NotNull(result);
         }
     }
 }
