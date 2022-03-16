@@ -6,9 +6,9 @@ namespace RealTimeChatApp
 {
     public class User
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public virtual int Id { get; set; }
+        public virtual string Name { get; set; }
+        public virtual DateTime CreatedDate { get; set; }
        
         
     }
