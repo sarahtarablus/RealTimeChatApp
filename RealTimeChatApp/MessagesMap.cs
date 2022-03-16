@@ -8,13 +8,11 @@ namespace RealTimeChatApp
         public MessagesMap()
         {
             Id(x => x.Id);
-            Map(x => x.userId);
+            References(x => x.userId).Cascade.All();
             Map(x => x.text);
             Map(x => x.CreatedDate);
-            Map(x => x.ChannelId);
+            References(x => x.ChannelId).Cascade.All();
 
-            References(x => x.userId);
-            References(x => x.ChannelId);
         }
     }
 }
