@@ -5,7 +5,7 @@ import '../custom.css';
 const ChatPage = () => {
     const [users, setUsers] = useState( "Jon");
     const [messages, setMessages] = useState([{}]);
-    const [inputText, setInputText] = useState();
+    const [inputText, setInputText] = useState("");
     const [inputValue, setInputValue] = useState();
 
     const url = "https://localhost:5001/api/Messages";
@@ -41,14 +41,14 @@ const ChatPage = () => {
     const sendMessage = async () => {
         let newMessage = {};
         let newMessage2 = {};
-        if (inputText !== "") {
+        if (inputText === "") {
+            return false;
+        } else {
             newMessage = { User: users, Message: inputText };
             setMessages([...messages, newMessage]);
             newMessage2 = { user: { id: 0, name: users }, text: inputText };
 
             postMessage(newMessage2);
-        } else {
-            return false;
         }
     }
 

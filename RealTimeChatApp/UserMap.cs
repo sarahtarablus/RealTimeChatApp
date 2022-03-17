@@ -7,9 +7,10 @@ namespace RealTimeChatApp
     {
         public UserMap()
         {
-            Id(x => x.Id);
+           // Id(x => x.Id);
             Map(x => x.Name);
-            Map(x => x.CreatedDate);
+            Map(x => x.Password);
+           // Map(x => x.CreatedDate);
         }
     }
 }

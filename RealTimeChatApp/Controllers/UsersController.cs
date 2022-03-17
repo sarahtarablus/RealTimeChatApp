@@ -9,13 +9,14 @@ namespace RealTimeChatApp.Controllers
     public class UsersController : ControllerBase
     {
 
-        private IUsersRepository _usersRepository;
+        //private IUsersRepository _usersRepository;
+        static List<User> users = new List<User>();
 
 
-        public UsersController(IUsersRepository usersRepository)
-        {
-            _usersRepository = usersRepository;
-        }
+        //public UsersController(IUsersRepository usersRepository)
+        //{
+        //    _usersRepository = usersRepository;
+        //}
 
 
         static IList<User> _usersList;
@@ -38,15 +39,15 @@ namespace RealTimeChatApp.Controllers
 
 
 
-        [HttpGet("id")]
-        public IActionResult Get(int id)
-        {
-            User user = _usersRepository.GetById(id);
-            if(user == null)
-            {
-                return NotFound();
-            }
-            return Ok(user);
+        //[HttpGet("id")]
+        //public IActionResult Get(int id)
+        //{
+        //    User user = _usersRepository.GetById(id);
+        //    if(user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok(user);
             //foreach (KeyValuePair<int, User> kvp in _users)
             //{
             //    var userValue = kvp.Value;
@@ -59,17 +60,18 @@ namespace RealTimeChatApp.Controllers
             //}
 
             //return NotFound("User not found");
-        }
+       // }
 
 
 
         [HttpPost]
         public IActionResult Post([FromBody] User user)
         {
-            var index = _users.Count;
-            _usersRepository.Add(index, user);
+            //var index = _users.Count;
+            users.Add(user);
+            return Ok(user);
 
-            return CreatedAtRoute("DefaultApi", new { id = user.Id, name = user.Name, createdDate = user.CreatedDate }, user);
+            //return CreatedAtRoute("DefaultApi", new { name = user.Name, password = user.Password}, user);
         }
 
     }
