@@ -15,10 +15,7 @@ namespace RealTimeChatApp
         {
 
             CreateHostBuilder(args).Build().Run();
-           
-            PostgreSQLConnection connection = new PostgreSQLConnection();
-            var connectionString = connection.CommandStringForGettingAUser("jen", "1234");
-            connection.GetRow(connectionString);
+          
          
 
         }

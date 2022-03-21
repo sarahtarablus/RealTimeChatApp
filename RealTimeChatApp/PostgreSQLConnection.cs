@@ -1,12 +1,11 @@
 ﻿using System;
 using Npgsql;
+using System.Diagnostics;
 
 namespace RealTimeChatApp
 {
     public class PostgreSQLConnection
     {
-
-
 
         public string CommandStringForPostingAUser(int id, string name, string password)
         {
@@ -52,6 +51,7 @@ namespace RealTimeChatApp
         public async void GetUserOrMessages(string command)
         {
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+           
 
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
@@ -61,7 +61,8 @@ namespace RealTimeChatApp
             {
                 while (await reader.ReadAsync())
                 {
-                     reader.GetString(0);
+                    //assign to a variable
+                   reader.GetString(0); 
                    
                 }
             }

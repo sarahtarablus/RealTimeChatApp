@@ -14,13 +14,16 @@ namespace RealTimeChatApp.Controllers
     [ApiController]
     public class MessagesController : ControllerBase
     {
+        static List<Messages> messages = new List<Messages>(); 
+
         [HttpGet]
-        public IEnumerable<Messages> Get()
+        public IEnumerable<Messages> Get(DateTime date, int channelId)
         {
+            PostgreSQLConnection connection = new PostgreSQLConnection();
+            var connectionString = connection.CommandStringForRetrievingMessages(date, channelId);
+            connection.GetUserOrMessages(connectionString);
             return messages;
         }
-
-        static List<Messages> messages = new List<Messages>();
 
         [HttpPost]
         public void Post([FromBody] Messages message)
