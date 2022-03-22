@@ -19,9 +19,9 @@ namespace RealTimeChatApp.Controllers
         [HttpGet]
         public IEnumerable<Messages> Get(DateTime date, int channelId)
         {
-            PostgreSQLConnection connection = new PostgreSQLConnection();
-            var connectionString = connection.CommandStringForRetrievingMessages(date, channelId);
-            connection.GetUserOrMessages(connectionString);
+            //PostgreSQLConnection connection = new PostgreSQLConnection();
+            //var connectionString = connection.CommandStringForRetrievingMessages(date, channelId);
+            //connection.GetMessagesAsync(connectionString);
             return messages;
         }
 

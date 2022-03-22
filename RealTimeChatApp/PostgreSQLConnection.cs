@@ -1,6 +1,8 @@
 ﻿using System;
 using Npgsql;
 using System.Diagnostics;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace RealTimeChatApp
 {
@@ -48,7 +50,7 @@ namespace RealTimeChatApp
 
         }
 
-        public async void GetUserOrMessages(string command)
+        public async void GetUser(string command)
         {
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
            
@@ -61,13 +63,67 @@ namespace RealTimeChatApp
             {
                 while (await reader.ReadAsync())
                 {
-                    //assign to a variable
-                   reader.GetString(0); 
-                   
+                    var user = $"Id: {reader.GetInt32(0)}, Name: {reader.GetString(1)};";
+ 
                 }
             }
 
         }
+
+
+        public string GetRow(string command)
+        {
+            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+            string user;
+
+            var conn = new NpgsqlConnection(connectionString);
+            conn.OpenAsync();
+
+            var cmd = new NpgsqlCommand(command, conn);
+            var reader = cmd.ExecuteReader();
+
+
+                if(reader.HasRows)
+                {
+                while (reader.Read())
+                {
+                   user = $"Id: {reader.GetInt32(0)}, Name: {reader.GetString(1)};";
+                   return user;
+                }
+                  
+
+                }
+         
+            
+
+        }
+
+        //public async Task<IAsyncResult> GetMessagesAsync(string command)
+        //{
+        //    var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+        //    string messages;
+
+        //    await using var conn = new NpgsqlConnection(connectionString);
+        //    await conn.OpenAsync();
+
+        //    await using (var cmd = new NpgsqlCommand(command, conn))
+        //    await using (var reader = await cmd.ExecuteReaderAsync())
+        //    {
+        //        while (await reader.ReadAsync())
+        //        {
+
+        //            string id = reader["user_id"].ToString();
+        //            string text = reader["text"].ToString();
+
+        //            messages = id + text;
+
+        //        }
+
+        //    }
+
+        //    return messages
+
+        //}
 
 
     }

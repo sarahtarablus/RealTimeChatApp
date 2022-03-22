@@ -15,7 +15,7 @@ namespace RealTimeChatApp
         {
 
             CreateHostBuilder(args).Build().Run();
-          
+            
          
 
         }
