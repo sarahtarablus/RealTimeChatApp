@@ -13,35 +13,53 @@ namespace RealTimeChatApp.Controllers
     [ApiController]
     public class MessagesController : ControllerBase
     {
-        //static List<Messages> messages = new List<Messages>(); 
 
-        [HttpGet]
-        public async Task<IEnumerable<Messages>> GetAsync()//DateTime date, int channelId)
+        [HttpGet("{channelId}")]
+        public async Task<IEnumerable<Messages>> GetAsync(int channelId)
         {
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            //var command = $"SELECT * FROM public.Messages WHERE created_date = {date} AND channel_id = {channelId};";
-            var command2 = "SELECT * FROM public.messages";
+            var command = "SELECT * FROM public.messages";
             var messages = new List<Messages>();
 
 
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
 
-            await using (var cmd = new NpgsqlCommand(command2, conn))
-            await using (var reader = await cmd.ExecuteReaderAsync())
+            //NpgsqlParameter parameter = new NpgsqlParameter();
+            //parameter.ParameterName = "@created_date";
+            //parameter.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date;
+            //parameter.Direction = System.Data.ParameterDirection.Input;
+            //parameter.Value = date;
+
+            NpgsqlParameter parameter2 = new NpgsqlParameter();
+            parameter2.ParameterName = "@channel_id";
+            parameter2.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bigint;
+            parameter2.Direction = System.Data.ParameterDirection.Input;
+            parameter2.Value = channelId;
+
+
+
+            await using (var cmd = new NpgsqlCommand(command, conn))
             {
-          
-                while (await reader.ReadAsync())
+                //NpgsqlParameter npgsqlParameter = cmd.Parameters.Add(parameter);
+                //NpgsqlParameter param = npgsqlParameter;
+                NpgsqlParameter npgsqlParameter2 = cmd.Parameters.Add(parameter2);
+                NpgsqlParameter param2 = npgsqlParameter2;
+                await using (var reader = await cmd.ExecuteReaderAsync())
                 {
-                    var message = new Messages()
+
+                    while (await reader.ReadAsync())
                     {
-                        Id = reader.GetInt32(0),
-                        UserId = reader.GetInt32(1),
-                        Text = reader.GetString(2),
-                        CreatedDate = reader.GetDateTime(3),
-                        ChannelId = reader.GetInt32(4)
-                    };
-                    messages.Add(message);
+                        var message = new Messages()
+                        {
+                            Id = reader.GetInt32(0),
+                            UserId = reader.GetInt32(1),
+                            Text = reader.GetString(2),
+                            CreatedDate = reader.GetDateTime(3),
+                            ChannelId = reader.GetInt32(4)
+                        };
+                        messages.Add(message);
+                    }
                 }
             }
             return messages;
@@ -68,7 +86,7 @@ namespace RealTimeChatApp.Controllers
                 cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
                await cmd.ExecuteNonQueryAsync();
             }
-            //messages.Add(message);
+       
         }
 
       
