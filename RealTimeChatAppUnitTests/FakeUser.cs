@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using RealTimeChatApp;
 
-namespace RealTimeChatApp
+namespace RealTimeChatAppUnitTests
 {
-
-
-
-    public class User : IUser
+    public class FakeUser : IUser
     {
         public virtual int Id { get; set; }
         public virtual string Name { get; set; }

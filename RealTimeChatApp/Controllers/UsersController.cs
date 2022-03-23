@@ -8,66 +8,68 @@ namespace RealTimeChatApp.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-
+        //static IDictionary<int, User> _users;
         //private IUsersRepository _usersRepository;
-        static List<User> users = new List<User>();
 
+        static List<IUser> users;
 
-        //public UsersController(IUsersRepository usersRepository)
+        //public UsersController(IList<IUser> users)
         //{
-        //    _usersRepository = usersRepository;
+        //    _users = users;
         //}
 
-
-        static IList<User> _usersList;
-        static IDictionary<int, User> _users;
+      
+       
+     
 
 
         [HttpGet]
-        public IEnumerable<User> Get()
+        public IEnumerable<IUser> Get()
         {
 
+            return users;
 
-            foreach (KeyValuePair<int, User> kvp in _users)
-            {
-                var user = kvp.Value;
-                _usersList.Add(user);
 
-            }
-            return _usersList;
+            //foreach (KeyValuePair<int, User> kvp in _users)
+            //{
+            //    var user = kvp.Value;
+            //    users.Add(user);
+
+            //}
         }
 
 
 
-        //[HttpGet("id")]
-        //public IActionResult Get(int id)
-        //{
-        //    User user = _usersRepository.GetById(id);
-        //    if(user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(user);
+        [HttpGet("id")]
+        public IActionResult Get(int id)
+        {
+            var user = users.Find(u => u.Id == id);
+            
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+            return Ok(user);
             //foreach (KeyValuePair<int, User> kvp in _users)
             //{
             //    var userValue = kvp.Value;
             //    var userId = user.id;
 
-            //    if(userId == id)
+            //    if (userId == id)
             //    {
             //        return Ok(user);
             //    }
             //}
 
             //return NotFound("User not found");
-       // }
+        }
 
 
 
         [HttpPost]
-        public IActionResult Post([FromBody] User user)
+        public IActionResult Post([FromBody] IUser user)
         {
-            //var index = _users.Count;
+            user.Id = users.Count;
             users.Add(user);
             return Ok(user);
 

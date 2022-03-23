@@ -19,16 +19,13 @@ namespace RealTimeChatAppUnitTests
         public void Post_always_isNotNull()
         {
             //Arrange
-            var mockRepository = new Mock<IUsersRepository>();
-            var usersController = new UsersController(mockRepository.Object);
+            //var mockRepository = new Mock<IUsersRepository>();
+            var usersController = new UsersController();
 
             //Action
-            IActionResult actionResult = usersController.Post(new User { id = 2, name = "Ron" });
-            //var createdResult = actionResult;
-
-
+            IActionResult result = usersController.Post(new FakeUser { Id = 2, Name = "Ron", Password = "2323" });
             //Assert
-            //Assert.NotNull(result);
+           Assert.NotNull(result);
         }
     }
 }

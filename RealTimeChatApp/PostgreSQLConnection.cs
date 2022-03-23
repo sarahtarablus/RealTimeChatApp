@@ -71,32 +71,32 @@ namespace RealTimeChatApp
         }
 
 
-        public string GetRow(string command)
-        {
-            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            string user;
+        //public string GetRow(string command)
+        //{
+        //    var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+        //    string user;
 
-            var conn = new NpgsqlConnection(connectionString);
-            conn.OpenAsync();
+        //    var conn = new NpgsqlConnection(connectionString);
+        //    conn.OpenAsync();
 
-            var cmd = new NpgsqlCommand(command, conn);
-            var reader = cmd.ExecuteReader();
+        //    var cmd = new NpgsqlCommand(command, conn);
+        //    var reader = cmd.ExecuteReader();
 
 
-                if(reader.HasRows)
-                {
-                while (reader.Read())
-                {
-                   user = $"Id: {reader.GetInt32(0)}, Name: {reader.GetString(1)};";
-                   return user;
-                }
+        //        if(reader.HasRows)
+        //        {
+        //        while (reader.Read())
+        //        {
+        //           user = $"Id: {reader.GetInt32(0)}, Name: {reader.GetString(1)};";
+        //           return user;
+        //        }
                   
 
-                }
-         
-            
+        //        }
 
-        }
+          
+
+        //}
 
         //public async Task<IAsyncResult> GetMessagesAsync(string command)
         //{
