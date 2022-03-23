@@ -27,6 +27,9 @@ namespace RealTimeChatApp.Controllers
         public IEnumerable<IUser> Get()
         {
 
+
+
+
             return users;
 
 
