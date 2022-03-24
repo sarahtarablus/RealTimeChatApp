@@ -14,22 +14,22 @@ namespace RealTimeChatApp.Controllers
     public class MessagesController : ControllerBase
     {
 
-        [HttpGet("{channelId}")]
-        public async Task<IEnumerable<Messages>> GetAsync(int channelId)
+        [HttpGet]
+        public async Task<IEnumerable<Messages>> GetAsync(DateTime createdDate, int channelId)
         {
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "SELECT * FROM public.messages";
+            var command = "SELECT * FROM public.messages WHERE created_date=@created_date AND channel_id=@channel_id";
             var messages = new List<Messages>();
 
 
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
 
-            //NpgsqlParameter parameter = new NpgsqlParameter();
-            //parameter.ParameterName = "@created_date";
-            //parameter.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date;
-            //parameter.Direction = System.Data.ParameterDirection.Input;
-            //parameter.Value = date;
+            NpgsqlParameter parameter = new NpgsqlParameter();
+            parameter.ParameterName = "@created_date";
+            parameter.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date;
+            parameter.Direction = System.Data.ParameterDirection.Input;
+            parameter.Value = createdDate;
 
             NpgsqlParameter parameter2 = new NpgsqlParameter();
             parameter2.ParameterName = "@channel_id";
@@ -41,10 +41,8 @@ namespace RealTimeChatApp.Controllers
 
             await using (var cmd = new NpgsqlCommand(command, conn))
             {
-                //NpgsqlParameter npgsqlParameter = cmd.Parameters.Add(parameter);
-                //NpgsqlParameter param = npgsqlParameter;
-                NpgsqlParameter npgsqlParameter2 = cmd.Parameters.Add(parameter2);
-                NpgsqlParameter param2 = npgsqlParameter2;
+                cmd.Parameters.Add(parameter);
+                cmd.Parameters.Add(parameter2);
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
 
@@ -52,11 +50,11 @@ namespace RealTimeChatApp.Controllers
                     {
                         var message = new Messages()
                         {
-                            Id = reader.GetInt32(0),
-                            UserId = reader.GetInt32(1),
-                            Text = reader.GetString(2),
-                            CreatedDate = reader.GetDateTime(3),
-                            ChannelId = reader.GetInt32(4)
+
+                            UserId = reader.GetInt32(0),
+                            Text = reader.GetString(1),
+                            CreatedDate = reader.GetDateTime(2),
+                            ChannelId = reader.GetInt32(3)
                         };
                         messages.Add(message);
                     }
@@ -72,14 +70,13 @@ namespace RealTimeChatApp.Controllers
         public async Task PostAsync([FromBody] Messages message)
         {
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = $"INSERT INTO public.messages (message_id, user_id, text, created_date, channel_id) VALUES (@message_id, @user_id, @text, @created_date, @channel_id);";// ({message.Id}, {message.UserId}, {message.Text}, {message.CreatedDate}, {message.ChannelId});";
+            var command = $"INSERT INTO public.messages (user_id, text, created_date, channel_id) VALUES (@user_id, @text, @created_date, @channel_id);";
             
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
 
             await using (var cmd = new NpgsqlCommand(command, conn))
             {
-                cmd.Parameters.AddWithValue("message_id", message.Id);
                 cmd.Parameters.AddWithValue("user_id", message.UserId);
                 cmd.Parameters.AddWithValue("text", message.Text);
                 cmd.Parameters.AddWithValue("created_date", message.CreatedDate);

@@ -30,12 +30,27 @@ const Login = () => {
     }
 
 
+
+    const getUser = async (username, password) => {
+        try {
+            const url = 'https://localhost:5001/api/Users?name=Jen&password=1234';
+            const response = await fetch(url);
+            console.log(response);
+            return response;
+        } catch (err) {
+            console.log(err);
+            return err;
+        }
+    }
+
+
     const submitLoginRequest = async (e) => {
         e.preventDefault();
         if (username === "" || password === "") {
             alert("Make sure to fill both username and password");
             return false;      
         } else {
+            //getUser(username, password);
             let person = { Name: username, Password: password };
             setUser({ person });
             console.log(user);
