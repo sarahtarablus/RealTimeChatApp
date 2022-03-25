@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+//import axios from 'axios';
+
 import ChatPage from './ChatPage';
 import Signup from './Signup';
 
@@ -8,56 +10,80 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [user, setUser] = useState({});
 
-    const url = "https://localhost:5001/api/Users";
+    const url = "https://localhost:5001/api/Login";
+    
    
-
-
-
-    const postUser = async (user) => {
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-type": "application/json" },
-                body: JSON.stringify(user)
-            });
-            console.log(response);
-            return response;
-
-        } catch (err) {
-            console.log(err);
-            return err;
-        }
-    }
-
-
-
-    const getUser = async (username, password) => {
-        try {
-            const url = 'https://localhost:5001/api/Users?name=Jen&password=1234';
-            const response = await fetch(url);
-            console.log(response);
-            return response;
-        } catch (err) {
-            console.log(err);
-            return err;
-        }
-    }
-
+    //create user object that can translate to dictionary for post request in Login.cs
 
     const submitLoginRequest = async (e) => {
         e.preventDefault();
-        if (username === "" || password === "") {
-            alert("Make sure to fill both username and password");
-            return false;      
-        } else {
-            //getUser(username, password);
-            let person = { Name: username, Password: password };
-            setUser({ person });
-            console.log(user);
-            postUser(user);
-        }
-      
+        try {
+            if (username === "" || password === "") {
+                alert("Make sure to fill both username and password");
+                return false;
+            } else {
+
+                let person = { Name: username, Password: password };
+                setUser({ person });
+                const options = {
+                    method: "POST",
+                    headers: { "Content-type": "application/json" },
+                    body: JSON.stringify(user)
+                };
+
+                const response1 = await fetch(url, options)
+                    .then(data => data)
+                    .catch(err => console.log(err))
+                //const response2 = await fetch(url)
+                //    .then(res => console.log(res))
+                //    .catch(err => console.log(err))
+
+
+            }
+        } catch (err) {
+            console.log(err);
+            
+        }   
     }
+
+
+
+
+    //const postUser = async (user) => {
+    //    try {
+    //        const response = await fetch(url, {
+    //            method: "POST",
+    //            headers: { "Content-type": "application/json" },
+    //            body: JSON.stringify(user)
+    //        });
+    //        console.log(response);
+    //        return response;
+
+    //    } catch (err) {
+    //        console.log(err);
+    //        return err;
+    //    }
+    //}
+
+
+
+    //const getUser = async () => {
+    //    try {
+    //        const options = {
+    //            headers: {
+    //                Content
+    //            }
+    //        }
+
+    //        const response = await fetch(url);
+    //        console.log(response);
+    //        return response;
+    //    } catch (err) {
+    //        console.log(err);
+    //        return err;
+    //    }
+    //}
+
 
 
 
