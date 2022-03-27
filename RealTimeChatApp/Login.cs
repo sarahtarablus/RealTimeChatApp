@@ -11,25 +11,28 @@ namespace RealTimeChatApp
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private Dictionary<string, string> _users = new Dictionary<string, string>();
+        private Dictionary<string, string> _user = new Dictionary<string, string>();
+        private List<LoginUser> users = new List<LoginUser>();
         private string Name { get; set; }
         private string Password { get; set; }
 
-        [HttpPost]
-        public void PostUser([FromBody] Dictionary<string, string> user)
-        {
 
-            foreach (KeyValuePair<string, string> kvp in user)
-                _users.Add(kvp.Key, kvp.Value);           
+
+        [HttpPost]
+        public void PostUser([FromBody] LoginUser user)
+        {
+           // users.Add(user);
+            _user.Add(user.Name, user.Password);
+                 
         }
 
 
 
         [HttpGet]
-        private async Task<IEnumerable> GetAsync()
+        public async Task<IEnumerable<User>> GetAsync()
         {
-            
-            foreach(KeyValuePair<string, string> kvp in _users)
+
+            foreach (KeyValuePair<string , string> kvp in _user)
             {
                 Name = kvp.Key;
                 Password = kvp.Value;

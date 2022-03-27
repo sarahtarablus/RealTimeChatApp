@@ -22,17 +22,17 @@ const Login = () => {
                 alert("Make sure to fill both username and password");
                 return false;
             } else {
-
-                let person = { Name: username, Password: password };
-                setUser({ person });
+                
+                setUser({ Name: username, Password: password });
+                console.log(user);
                 const options = {
                     method: "POST",
                     headers: { "Content-type": "application/json" },
-                    body: JSON.stringify(user)
+                    body: JSON.stringify({ user })
                 };
 
                 const response1 = await fetch(url, options)
-                    .then(data => data)
+                    .then(data => console.log(data))
                     .catch(err => console.log(err))
                 //const response2 = await fetch(url)
                 //    .then(res => console.log(res))
@@ -83,7 +83,7 @@ const Login = () => {
     //        return err;
     //    }
     //}
-
+  
 
 
 
