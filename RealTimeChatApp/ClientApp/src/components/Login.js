@@ -10,9 +10,8 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [user, setUser] = useState({});
 
-    const url = "https://localhost:5001/api/Login";
-    
    
+   const url = "https://localhost:5001/api/Login"
     //create user object that can translate to dictionary for post request in Login.cs
 
     const submitLoginRequest = async (e) => {
@@ -23,18 +22,21 @@ const Login = () => {
                 return false;
             } else {
                 
-                setUser({ Name: username, Password: password });
-                console.log(user);
+                //setUser({ Name: username, Password: password });
+                //console.log(user);
                 const options = {
                     method: "POST",
                     headers: { "Content-type": "application/json" },
-                    body: JSON.stringify({ user })
+                    body: {Name: username, Password: password}
                 };
 
-                const response1 = await fetch(url, options)
+                
+                const response = await fetch(url, options)
+                    .then(data => data.json())
                     .then(data => console.log(data))
                     .catch(err => console.log(err))
-                //const response2 = await fetch(url)
+                //const response = await fetch(url)
+                //    .then(res => res.json())
                 //    .then(res => console.log(res))
                 //    .catch(err => console.log(err))
 
