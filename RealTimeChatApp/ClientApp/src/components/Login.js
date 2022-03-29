@@ -12,8 +12,7 @@ const Login = () => {
 
    
    const url = "https://localhost:5001/api/Login"
-    //create user object that can translate to dictionary for post request in Login.cs
-
+   
     const submitLoginRequest = async (e) => {
         e.preventDefault();
         try {
@@ -22,8 +21,8 @@ const Login = () => {
                 return false;
             } else {
                 
-                //setUser({ Name: username, Password: password });
-                //console.log(user);
+                setUser({ Name: username, Password: password });
+                console.log(user);
                 const options = {
                     method: "POST",
                     headers: { "Content-type": "application/json" },
@@ -32,7 +31,6 @@ const Login = () => {
 
                 
                 const response = await fetch(url, options)
-                    .then(data => data.json())
                     .then(data => console.log(data))
                     .catch(err => console.log(err))
                 //const response = await fetch(url)
