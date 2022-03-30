@@ -15,19 +15,10 @@ namespace RealTimeChatApp
     public class LoginController : ControllerBase
     {
   
-        //private string Name { get; set; }
-        //private string Password { get; set; }
-
-       
 
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody] LoginUser user)
-        {
-   
-            //var body = new StreamReader(HttpContext.Request.Body);
-            //var requestBody = await body.ReadToEndAsync();
-            //var loginUser = JsonConvert.DeserializeObject<LoginUser>(requestBody);
-           
+        {   
            
             var _user = await GetUserAsync(user.Name, user.Password);
             
