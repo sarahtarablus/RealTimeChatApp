@@ -25,13 +25,14 @@ const Login = () => {
                 console.log(user);
                 const options = {
                     method: "POST",
-                    headers: { "Content-type": "application/json" },
-                    body: {Name: username, Password: password}
+                    headers: { 'Accept': 'application/json', "Content-type": "application/json" },
+                    body: JSON.stringify({Name: username, Password: password})
                 };
 
                 
                 const response = await fetch(url, options)
-                    .then(data => console.log(data))
+                    .then(res => res.json())
+                    .then(res => console.log(res))
                     .catch(err => console.log(err))
                 //const response = await fetch(url)
                 //    .then(res => res.json())

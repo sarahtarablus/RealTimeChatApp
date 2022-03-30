@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -13,42 +14,30 @@ namespace RealTimeChatApp
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private Dictionary<string, string> Users = new Dictionary<string, string>();
-        private List<LoginUser> _users = new List<LoginUser>();
-        private string Name { get; set; }
-        private string Password { get; set; }
+  
+        //private string Name { get; set; }
+        //private string Password { get; set; }
 
        
 
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromForm] LoginUser user)
+        public async Task<IActionResult> PostUser([FromBody] LoginUser user)
         {
-            var body = new StreamReader(HttpContext.Request.Body);
-            var requestBody = await body.ReadToEndAsync();
-            var loginUser = JsonConvert.DeserializeObject<LoginUser>(requestBody);
-            Users.Add(key: loginUser.Name, value: loginUser.Password);
-
-            foreach(KeyValuePair<string,string> kvp in Users)
-            {
-                Name = kvp.Key;
-                Password = kvp.Value;
-            }
-
-            var userIsFound = await GetAsync(Name, Password);
-
-
-
-
-
-
-            return Ok(userIsFound);
-          
+   
+            //var body = new StreamReader(HttpContext.Request.Body);
+            //var requestBody = await body.ReadToEndAsync();
+            //var loginUser = JsonConvert.DeserializeObject<LoginUser>(requestBody);
+           
+           
+            var _user = await GetUserAsync(user.Name, user.Password);
+            
+            return Ok(_user);
         }
 
 
 
         [HttpGet]
-        public async Task<IEnumerable<User>> GetAsync(string name, string password)
+        public async Task<IEnumerable<User>> GetUserAsync(string name, string password)
         {
             
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
@@ -89,10 +78,6 @@ namespace RealTimeChatApp
                             Password = reader.GetString(2)
 
                         };
-                        if(user == null)
-                        {
-                            throw new ArgumentNullException("User not found");
-                        }
                         users.Add(user);
                     }
 
@@ -100,6 +85,9 @@ namespace RealTimeChatApp
             }
 
             return users;
+            
+
+         
         }
     }
 }
