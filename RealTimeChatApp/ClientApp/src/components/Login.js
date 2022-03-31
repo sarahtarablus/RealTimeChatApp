@@ -20,6 +20,20 @@ const Login = () => {
 
 
 
+
+    const getUsersCountInDatabase = async () => {
+        const url = "https://localhost:5001/api/Users"
+        try {
+            const response = await fetch(url);
+            console.log(response)
+            return response;
+        } catch (err) {
+            console.log(err);
+            return err;
+        }
+    }
+
+
     const SubmitLoginRequest = async (e) => {
         e.preventDefault();
         const url = "https://localhost:5001/api/Login";
@@ -41,6 +55,8 @@ const Login = () => {
     const showModal = () => {
         setShow(true);
     }
+
+
 
     const signUp = () => {
         setShow(false);
