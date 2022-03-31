@@ -1,14 +1,32 @@
 ﻿import 'bootstrap/dist/css/bootstrap.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import '../custom.css';
 
 const ChatPage = () => {
-    const [users, setUsers] = useState( "Jon");
+    const [user, setUser] = useState("");
     const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState("");
     const [inputValue, setInputValue] = useState();
 
+    let history = useHistory();
+
     const url = "https://localhost:5001/api/Messages";
+
+    useEffect(() => {
+        const data = localStorage.getItem("user");
+        setUser(JSON.parse(data));
+    });
+
+
+
+    const logOut = () => {
+        localStorage.removeItem("user");
+        history.push("/")
+    }
+
+
+
 
     const getMessages = async () => {
         try {
@@ -20,6 +38,9 @@ const ChatPage = () => {
             return err;
         }
     }
+
+
+
 
 
     const postMessage = async (message) => {
@@ -44,9 +65,9 @@ const ChatPage = () => {
         if (inputText === "") {
             return false;
         } else {
-            newMessage = { User: users, Message: inputText };
+            newMessage = { User: user, Message: inputText };
             setMessages([...messages, newMessage]);
-            newMessage2 = { user: { id: 0, name: users }, text: inputText };
+            newMessage2 = { user: { id: 0, name: user }, text: inputText };
 
             postMessage(newMessage2);
         }
@@ -59,14 +80,14 @@ const ChatPage = () => {
       <div>
             <div className="container rounded">
                 <p className="title-1">Chat App</p>
-                <button className="btn logout" type="button">LOGOUT</button>
+                <button className="btn logout" type="button" onClick={logOut}>LOGOUT</button>
             </div>
             <div className="container-2 rounded">
                     <div className="row">
                         <div className="col-3 rounded">
                         <p className="title rounded">ONLINE USERS</p>
                         <div className="user">
-                                <p className="userName">{users}</p>                   
+                                <p className="userName">{user}</p>                   
                         </div>
                         </div>
                     <div className="col-9 bg-light rounded">
@@ -82,8 +103,8 @@ const ChatPage = () => {
            
                 <div className="input-group">
                     <input type="text" className="form-control" placeholder="Text here" value={inputValue} onChange={(e) => setInputText(e.target.value)} />
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="button" onClick={sendMessage}>Send</button>
+                    <div className="input-group-append">
+                        <button className="btn btn-secondary" type="button" onClick={sendMessage}>Send</button>
                         </div>
                 </div>
             </div>

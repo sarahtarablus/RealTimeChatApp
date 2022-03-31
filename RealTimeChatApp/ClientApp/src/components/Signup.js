@@ -1,33 +1,34 @@
 import React, { useState } from 'react';
+import "../custom.css";
 
-const Signup = () => {
+const Signup = ({ signup, show, handleUsername, handlePassword }) => {
+    const showOrHide = show ? "modal display-block" : "modal display-none";
  
 
-
-
-
-
+  
 
     return (
-            <div className="container login">
-                <div className="row">
-                    <div className="col-4">
-                        <form>
-                            <div className="form-control mx-sm-3 mb-2 mt-5">
-                                <label for="username">UserName</label>
-                                <input type="text" className="form-control" id="passwordInput" placeholder="Enter username"/>
-                            </div>
-                            <div className="form-control mx-sm-3 mb-2 mt-5">
-                                <label for="username">Username</label>
-                                <input type="text" className="form-control" id="passwordInput" placeholder="Enter username" />
-                            </div>
-                            <button type="submit">Signup</button>
-                        </form>
+        <div className={showOrHide}>
+                <section className="modal-main">
+                <form>
+                    <div className="form-group  mx-sm-3 mb-2 mt-5">
+                        <label htmlFor="username">Username</label>
+                        <input type="text" className="form-control" id="usernameInput" placeholder="Enter username" onChange={handleUsername} />
                     </div>
-                    <div className="col-8"></div>
-                </div>
+                    <div className="form-group mx-sm-3 mb-2">
+                        <label htmlFor="password">Password</label>
+                        <input type="text" className="form-control" id="passwordInput" placeholder="Password" onChange={handlePassword} />
+                    </div>
+                    <button type="submit" className="btn btn-primary mx-sm-3 mb-2 mt-3" onClick={signup}>Signup</button>
+                </form>
+                  <button type="button">
+                    Close
+                  </button>
+                </section>
+           </div>
 
-            </div>
+
+
        
     );
 }
