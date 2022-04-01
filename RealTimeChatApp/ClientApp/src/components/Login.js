@@ -32,7 +32,7 @@ const Login = () => {
             console.log(err);
             return err;
         }
-    }
+    };
 
 
 
@@ -46,13 +46,13 @@ const Login = () => {
             };
             const response = await fetch(url, options)
                 .then(res => res.json())
-            response.length ? localStorage.setItem("user", JSON.stringify({id: response[0].id, name: response[0].name })) : console.log('empty');
+            response.length ? localStorage.setItem("user", JSON.stringify({ id: response[0].id, name: response[0].name })) : console.log('empty');
             history.push("/Home");
         } catch (err) {
             console.log(err);
             return err;
         }
-    }
+    };
 
 
     const SubmitLoginRequest = async (e) => {
@@ -67,14 +67,14 @@ const Login = () => {
         } catch (err) {
             console.log(err);
         }
-    }
+    };
 
     
 
 
     const showSignUpWindow = () => {
         setShow(true);
-    }
+    };
 
 
 
@@ -92,13 +92,13 @@ const Login = () => {
             console.log(err);
             return err;
         }
-    }
+    };
 
 
     const signUp = () => {
         setShow(false);
         postUser(id, username, password);
-    }
+    };
 
 
 
