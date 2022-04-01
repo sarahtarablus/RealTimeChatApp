@@ -5,18 +5,27 @@ import '../custom.css';
 
 const ChatPage = () => {
     const [user, setUser] = useState("");
+    const [userId, setUserId] = useState(null);
     const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState("");
-    const [inputValue, setInputValue] = useState();
+    const [inputValue, setInputValue] = useState(); //??
 
     let history = useHistory();
 
     const url = "https://localhost:5001/api/Messages";
 
+
     useEffect(() => {
-        const data = localStorage.getItem("user");
-        setUser(JSON.parse(data));
+        getUsername();
     });
+
+
+    const getUsername = () => {
+        const data = localStorage.getItem("user");
+        const jsonData = JSON.parse(data);
+        setUser(jsonData.name);
+        setUserId(jsonData.id);
+    }
 
 
 
@@ -43,12 +52,12 @@ const ChatPage = () => {
 
 
 
-    const postMessage = async (message) => {
+    const postMessage = async (id, message, date, channelId) => {
         try {
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-type": "application/json" },
-                body: JSON.stringify(message)
+                body: JSON.stringify({UserId: id, Text: message, CreatedDate: date, ChannelId: channelId )
             }
             );
             console.log(response)
@@ -58,6 +67,8 @@ const ChatPage = () => {
             return err;
         }
     }
+
+
 
     const sendMessage = async () => {
         let newMessage = {};
