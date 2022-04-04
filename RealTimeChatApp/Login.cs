@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Npgsql;
 
+
 namespace RealTimeChatApp
 {
     [Route("api/[controller]")]

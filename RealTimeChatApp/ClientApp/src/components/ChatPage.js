@@ -6,7 +6,7 @@ import '../custom.css';
 const ChatPage = () => {
     const [user, setUser] = useState("");
     const [channelId, setChannelId] = useState([]);
-    const [channelPage, setChannelPage] = useState();
+    const [channelPage, setChannelPage] = useState({});
     const [userId, setUserId] = useState(null);
     const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState("");
@@ -16,7 +16,7 @@ const ChatPage = () => {
 
   
     useEffect(() => {
-        getUsername();
+        //getUsername();
        // getChannels();
 
     }, []);
@@ -118,9 +118,9 @@ const ChatPage = () => {
                     <div className="col-3 rounded">
                         <p className="title rounded">CHANNELS</p>
                         <div className="channels">
-                            <button className="channel" onClick={setChannelPage(1)}>"#General"</button> 
-                            <button className="channel" onClick={setChannelPage(2)}>"#Sports"</button>
-                            <button className="channel" onClick={setChannelPage(3)}>"#Music"</button> 
+                            <button className="channel" type="button" onClick={setChannelPage(1)}>"#General"</button> 
+                            <button className="channel" type="button" onClick={setChannelPage(2)}>"#Sports"</button>
+                            <button className="channel" type="button" onClick={setChannelPage(3)}>"#Music"</button> 
                         </div>
                     </div>
                         <div className="col-3 rounded">

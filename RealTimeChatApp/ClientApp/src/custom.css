@@ -144,3 +144,7 @@ label {
 .display-none {
     display: none;
 }
+
+.channel {
+    border: none;
+}
