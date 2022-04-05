@@ -42,10 +42,13 @@ namespace RealTimeChatApp.Controllers
 
 
 
+
+
+
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
-
+            string token = TokenManager.GenerateToken(user.Password);
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
             var command = "INSERT INTO public.users (id, name, password) VALUES (@id, @name, @password);";
             await using var conn = new NpgsqlConnection(connectionString);
@@ -56,7 +59,7 @@ namespace RealTimeChatApp.Controllers
             {
                 cmd.Parameters.AddWithValue("@id", user.Id);
                 cmd.Parameters.AddWithValue("@name", user.Name);
-                cmd.Parameters.AddWithValue("@password", user.Password);
+                cmd.Parameters.AddWithValue("@password", token);
 
                 await cmd.ExecuteNonQueryAsync();
             }
@@ -64,4 +67,4 @@ namespace RealTimeChatApp.Controllers
         }
 
     }
-}
+

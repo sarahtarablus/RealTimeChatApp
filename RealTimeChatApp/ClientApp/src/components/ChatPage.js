@@ -12,14 +12,15 @@ const ChatPage = () => {
     const [inputText, setInputText] = useState("");
     const [inputValue, setInputValue] = useState(); //??
 
+
     let history = useHistory();
 
   
-    useEffect(() => {
-        //getUsername();
-       // getChannels();
+    //useEffect(() => {
+    //    getUsername();
+    //    getChannels();
 
-    }, []);
+    //}, []);
 
 
     const getUsername = () => {

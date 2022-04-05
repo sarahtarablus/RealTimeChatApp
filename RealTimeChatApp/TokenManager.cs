@@ -8,14 +8,13 @@ namespace RealTimeChatApp
 {
     public class TokenManager
     {
-        private static string Secret;
-        //private static string GenerateSecretKey()
-        //{
-        //    var key = new byte[32];
-        //    RandomNumberGenerator.Create().GetBytes(key);
-        //    return key;
-        //}
+        private static string Secret = "5HKgrC67p6846hhQo1rgBgv/yuvyfStLOAQZCRxD6E0=";
 
+        //public static string GetSecret()
+        //{
+        //    var builder = 
+        //}
+      
         public static string GenerateToken(string username)
         {
             byte[] key = Convert.FromBase64String(Secret);
