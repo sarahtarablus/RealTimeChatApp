@@ -17,7 +17,6 @@ const Login = () => {
         //localStorage.getItem("user") ? history.push("/Home") : console.log("welcome");
 
         getUserIdCount();
-        console.log(id);
     }, []);
 
 
@@ -28,9 +27,7 @@ const Login = () => {
         try {
             const response = await fetch(url)
                 .then(res => res.json())
-                
                 .then(res => !res.length ? setId(1) : setId(res[0] + 1))
-            console.log(id);
         } catch (err) {
             console.log(err);
             return err;
@@ -49,7 +46,8 @@ const Login = () => {
             };
             const response = await fetch(url, options)
                 .then(res => res.json())
-            response.length ? localStorage.setItem("user", JSON.stringify({ id: response[0].id, name: response[0].name })) : alert("Sorry there is no user with those credentials");
+                .then(res => console.log(res))
+            response.length ? localStorage.setItem("user", JSON.stringify({ id: response[0].Id, token: response[0].Name })) : alert("Sorry there is no user with those credentials");
            // history.push("/Home");
 
         } catch (err) {
@@ -78,7 +76,6 @@ const Login = () => {
 
     const showSignUpWindow = () => {
         setShow(true);
-        //getUserIdCount();
     };
 
 
@@ -102,8 +99,6 @@ const Login = () => {
 
     const signUp = () => {
         setShow(false);
-        //getUserIdCount();
-        console.log(id);
         postUser(id, username, password);
     };
 

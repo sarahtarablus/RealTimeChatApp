@@ -20,32 +20,22 @@ namespace RealTimeChatApp
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody] LoginUser user)
         {
-            string password = TokenManager.GenerateToken(user.Password);
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "SELECT * FROM public.users WHERE name=@name AND password=@password";
-            var users = new List<UserAndToken>();
+            var command = "SELECT * FROM public.users WHERE name=@name";
+            List<User> userToken = new List<User>();
 
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
-
-
-
+            
             NpgsqlParameter parameter = new NpgsqlParameter();
             parameter.ParameterName = "@name";
             parameter.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
             parameter.Direction = System.Data.ParameterDirection.Input;
             parameter.Value = user.Name;
 
-            NpgsqlParameter parameter2 = new NpgsqlParameter();
-            parameter2.ParameterName = "@password";
-            parameter2.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
-            parameter2.Direction = System.Data.ParameterDirection.Input;
-            parameter2.Value = password;
-
             await using (var cmd = new NpgsqlCommand(command, conn))
             {
                 cmd.Parameters.Add(parameter);
-                cmd.Parameters.Add(parameter2);
 
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
@@ -59,28 +49,25 @@ namespace RealTimeChatApp
                             Password = reader.GetString(2)
 
                         };
-                        if(_user == null)
+                        var password = TokenManager.ValidateToken(_user.Password);
+                        if (user.Password == password)
                         {
-                            return null;
+                            var token = TokenManager.GenerateToken(_user.Name);
+                            var userFound = new User()
+                            {
+                                Id = _user.Id,
+                                Name = token,
+                                Password = ""
+                            };
+                            userToken.Add(userFound);
                         }
-                        var token = TokenManager.GenerateToken(_user.Name);
-                        var userWithToken = new UserAndToken
-                        {
-                            Id = _user.Id,
-                            Name = _user.Name,
-                            Token = token
-                        };
-                        users.Add(userWithToken);
+                        else return null;
                     }
 
                 }
             }
-            if(users == null)
-            {
-                return null;
-            }
 
-            return Ok(users);
+            return Ok(userToken);
 
             
         }
