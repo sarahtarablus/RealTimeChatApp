@@ -16,7 +16,7 @@ const Login = () => {
     useEffect(() => {
         //localStorage.getItem("user") ? history.push("/Home") : console.log("welcome");
 
-        getUserIdCount();
+        getUserToken();
     }, []);
 
 
@@ -36,7 +36,7 @@ const Login = () => {
 
 
 
-    const checkUser = async (name, password) => {
+    const loginRequest = async (name, password) => {
         const url = "https://localhost:5001/api/Login";
         try {
             const options = {
@@ -46,15 +46,26 @@ const Login = () => {
             };
             const response = await fetch(url, options)
                 .then(res => res.json())
-                .then(res => console.log(res))
-            response.length ? localStorage.setItem("user", JSON.stringify({ id: response[0].Id, token: response[0].Name })) : alert("Sorry there is no user with those credentials");
-           // history.push("/Home");
+
+            console.log(response);
+            if (!response.length) {
+                alert("Sorry there is no user with those credentials");
+            } else {
+                console.log(response);
+                //let id = JSON.stringify({ response[0].id });
+                //let name = JSON.stringify({ response[0].name });
+                //let password = JSON.stringify({ response[0].password });
+                localStorage.setItem("user", JSON.stringify({ id: response[0].id, name: response[0].name, token: response[0].password }));
+            }
 
         } catch (err) {
             console.log(err);
             return err;
         }
     };
+
+
+
 
 
     const SubmitLoginRequest = async (e) => {
@@ -64,12 +75,83 @@ const Login = () => {
                 alert("Make sure to fill both username and password");
                 return false;
             } else {
-                checkUser(username, password);
+            loginRequest(username, password);
+             
             }
         } catch (err) {
             console.log(err);
         }
     };
+
+
+    const isTokenExpired = () => {
+        const token = this.getUserFromLS()
+    }
+
+
+    //const setUserInLS = (id, token) => {
+    //    localStorage.setItem("user", id, name, token);
+    //};
+
+
+    const getUserToken = () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        console.log(user);
+        return user.token;
+    }
+
+    const getUserId = () => {
+        const user = localStorage.getItem("user");
+        return user.id;
+    }
+
+    const getUserName = () => {
+        const user = localStorage.getItem("user");
+        return user.name;
+    }
+
+    //const checkUser = async (name, password) => {
+    //    const url = "https://localhost:5001/api/Login";
+    //    try {
+    //        const options = {
+    //            method: "POST",
+    //            headers: { 'Accept': 'application/json', "Content-type": "application/json" },
+    //            body: JSON.stringify({ Name: name, Password: password })
+    //        };
+    //        const response = await fetch(url, options)
+    //            .then(res => res.json())
+
+    //        console.log(response);
+    //        if (!response.length) {
+    //            alert("Sorry there is no user with those credentials");
+    //        } else {
+    //            console.log(response);
+    //            localStorage.setItem("user", JSON.stringify({ id: response[0].id, name: response[0].name, token: response[0].password}));
+    //       // history.push("/Home");
+
+    //        }
+
+    //   } catch (err) {
+    //        console.log(err);
+    //        return err;
+    //    }
+    //};
+
+
+    //const SubmitLoginRequest = async (e) => {
+    //    e.preventDefault();
+    //    try {
+    //        if (username === "" || password === "") {
+    //            alert("Make sure to fill both username and password");
+    //            return false;
+    //        } else {
+    //            checkUser(username, password);
+    //        }
+    //    } catch (err) {
+    //        console.log(err);
+    //    }
+    //};
 
     
 
@@ -82,11 +164,13 @@ const Login = () => {
 
     const postUser = async (id, name, password) => {
         const url = "https://localhost:5001/api/Users";
+        let nameToLowerCase = name.toLowerCase();
+        let passwordToLowerCase = password.toLowerCase();
         try {
             const options = {
                 method: "POST",
                 headers: { 'Accept': 'application/json', "Content-type": "application/json" },
-                body: JSON.stringify({ Id: id, Name: name, Password: password })
+                body: JSON.stringify({ Id: id, Name: nameToLowerCase, Password: passwordToLowerCase })
             };
             const response = await fetch(url, options)
                 .then(res => res.json())
@@ -100,6 +184,7 @@ const Login = () => {
     const signUp = () => {
         setShow(false);
         postUser(id, username, password);
+   
     };
 
 

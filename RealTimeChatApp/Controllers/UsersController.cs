@@ -19,6 +19,7 @@ namespace RealTimeChatApp.Controllers
             List<int> usersCount = new List<int>();
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
             var command = "SELECT * FROM public.users ORDER BY id DESC LIMIT 1";
+          
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
 
@@ -48,9 +49,10 @@ namespace RealTimeChatApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
-            string hashPassword = TokenManager.GenerateToken(user.Password);
+            //string hashPassword = TokenManager.GenerateToken(user.Password);
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
             var command = "INSERT INTO public.users (id, name, password) VALUES (@id, @name, @password);";
+
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
 
@@ -59,7 +61,7 @@ namespace RealTimeChatApp.Controllers
             {
                 cmd.Parameters.AddWithValue("@id", user.Id);
                 cmd.Parameters.AddWithValue("@name", user.Name);
-                cmd.Parameters.AddWithValue("@password", hashPassword);
+                cmd.Parameters.AddWithValue("@password", user.Password);
 
                 await cmd.ExecuteNonQueryAsync();
             }

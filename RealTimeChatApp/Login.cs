@@ -21,8 +21,9 @@ namespace RealTimeChatApp
         public async Task<IActionResult> PostUser([FromBody] LoginUser user)
         {
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "SELECT * FROM public.users WHERE name=@name";
-            List<User> userToken = new List<User>();
+            var command = "SELECT * FROM public.users WHERE name=@name AND password=@password;";
+            var userToken = new List<User>();
+        
 
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
@@ -33,9 +34,16 @@ namespace RealTimeChatApp
             parameter.Direction = System.Data.ParameterDirection.Input;
             parameter.Value = user.Name;
 
+            NpgsqlParameter parameter2 = new NpgsqlParameter();
+            parameter2.ParameterName = "@password";
+            parameter2.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Varchar;
+            parameter2.Direction = System.Data.ParameterDirection.Input;
+            parameter2.Value = user.Password;
+
             await using (var cmd = new NpgsqlCommand(command, conn))
             {
                 cmd.Parameters.Add(parameter);
+                cmd.Parameters.Add(parameter2);
 
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
@@ -49,19 +57,21 @@ namespace RealTimeChatApp
                             Password = reader.GetString(2)
 
                         };
-                        var password = TokenManager.ValidateToken(_user.Password);
-                        if (user.Password == password)
+                        var token = TokenManager.GenerateToken(_user.Name);
+
+                        if (_user != null)
                         {
-                            var token = TokenManager.GenerateToken(_user.Name);
+
                             var userFound = new User()
                             {
                                 Id = _user.Id,
-                                Name = token,
-                                Password = ""
+                                Name = _user.Name,
+                                Password = token
+
                             };
                             userToken.Add(userFound);
                         }
-                        else return null;
+                        
                     }
 
                 }
