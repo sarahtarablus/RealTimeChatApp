@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
 
@@ -49,7 +50,8 @@ namespace RealTimeChatApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
-            //string hashPassword = TokenManager.GenerateToken(user.Password);
+            var passwordHasher = new PasswordHasher<string>();
+            var hash = passwordHasher.HashPassword(user.Name, user.Password);
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
             var command = "INSERT INTO public.users (id, name, password) VALUES (@id, @name, @password);";
 
@@ -61,7 +63,7 @@ namespace RealTimeChatApp.Controllers
             {
                 cmd.Parameters.AddWithValue("@id", user.Id);
                 cmd.Parameters.AddWithValue("@name", user.Name);
-                cmd.Parameters.AddWithValue("@password", user.Password);
+                cmd.Parameters.AddWithValue("@password", hash);
 
                 await cmd.ExecuteNonQueryAsync();
             }

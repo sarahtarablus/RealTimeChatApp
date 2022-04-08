@@ -16,7 +16,7 @@ const Login = () => {
     useEffect(() => {
         //localStorage.getItem("user") ? history.push("/Home") : console.log("welcome");
 
-        getUserToken();
+        getUserIdCount();
     }, []);
 
 
@@ -27,7 +27,9 @@ const Login = () => {
         try {
             const response = await fetch(url)
                 .then(res => res.json())
-                .then(res => !res.length ? setId(1) : setId(res[0] + 1))
+                .then(res => console.log(res))
+                //.then(res => !res.length ? setId(1) : setId(res[0] + 1))
+
         } catch (err) {
             console.log(err);
             return err;
@@ -84,6 +86,8 @@ const Login = () => {
     };
 
 
+
+
     const isTokenExpired = () => {
         const token = this.getUserFromLS()
     }
@@ -101,10 +105,14 @@ const Login = () => {
         return user.token;
     }
 
+
+
     const getUserId = () => {
         const user = localStorage.getItem("user");
         return user.id;
     }
+
+
 
     const getUserName = () => {
         const user = localStorage.getItem("user");
@@ -210,15 +218,15 @@ const Login = () => {
                            <input type="text" className="form-control" id="passwordInput" placeholder="Password" onChange={(e) => {
                                setPassword(e.target.value)
                            }} /> 
-                       </div>
-                       <button type="submit" className="btn btn-primary mx-sm-3 mb-2 mt-3" onClick={SubmitLoginRequest}>Login</button>
+                           </div>
+                            <button type="submit" className="btn btn-primary mx-sm-3 mb-2 mt-3" onClick={SubmitLoginRequest}>Login</button>
                                 <p className="or mx-sm-3 mb-1 mt-2">Don't have an account?</p>
-                       <button type="button" className="signup btn mx-sm-1 mb-2 mt-1 text-primary" onClick={showSignUpWindow}>Signup</button>
-                       <Signup show={show} signup={signUp} handleUsername={(e) => { setUsername(e.target.value) }} handlePassword={(e) => {
-                           setPassword(e.target.value)
-                       }}>
-                       </Signup>
-                            </form>
+                            <button type="button" className="signup btn mx-sm-1 mb-2 mt-1 text-primary" onClick={showSignUpWindow}>Signup</button>
+                   </form>
+                   <Signup show={show} signup={signUp} handleUsername={(e) => { setUsername(e.target.value) }} handlePassword={(e) => {
+                       setPassword(e.target.value)
+                   }}>
+                   </Signup>
                         </div>
                         <div className="col-8"></div>
                     </div>
