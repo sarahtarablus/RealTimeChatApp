@@ -64,7 +64,7 @@ namespace RealTimeChatApp
 
         public static string ValidateToken(string token)
         {
-            string username = null;
+            string username;// = null;
             ClaimsPrincipal principal = GetPrincipal(token);
             if (principal == null)
                 return null;

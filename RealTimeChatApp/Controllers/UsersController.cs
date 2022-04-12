@@ -48,7 +48,7 @@ namespace RealTimeChatApp.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> PostUser([FromBody] User user)
         {
             var passwordHasher = new PasswordHasher<string>();
             var hash = passwordHasher.HashPassword(user.Name, user.Password);

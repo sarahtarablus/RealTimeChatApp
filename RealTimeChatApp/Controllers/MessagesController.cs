@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -67,22 +68,43 @@ namespace RealTimeChatApp.Controllers
 
 
         [HttpPost]
-        public async Task PostAsync([FromBody] Messages message)
+        public async Task<IActionResult> PostAsync([FromBody] MessagesUsername message)
         {
-            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = $"INSERT INTO public.messages (user_id, text, created_date, channel_id) VALUES (@user_id, @text, @created_date, @channel_id);";
-            
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
+            string authHeader = this.HttpContext.Request.Headers["Authorization"];
+           
+            if(authHeader != null && authHeader.StartsWith("Bearer"))
+            {               
+                string encodedToken = authHeader.Substring("Bearer".Length).Trim();
+                string encodedUsername = encodedToken.Substring(1, encodedToken.Length - 2);               
+                var username = TokenManager.ValidateToken(encodedUsername);
+                if(username == message.UserName)
+                {
+                    var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+                    var command = $"INSERT INTO public.messages (user_id, text, created_date, channel_id) VALUES (@user_id, @text, @created_date, @channel_id);";
 
-            await using (var cmd = new NpgsqlCommand(command, conn))
+                    await using var conn = new NpgsqlConnection(connectionString);
+                    await conn.OpenAsync();
+
+                    await using (var cmd = new NpgsqlCommand(command, conn))
+                    {
+                        cmd.Parameters.AddWithValue("user_id", message.UserId);
+                        cmd.Parameters.AddWithValue("text", message.Text);
+                        cmd.Parameters.AddWithValue("created_date", message.CreatedDate);
+                        cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+                else
+                {
+                    throw new Exception("The authentication token doesn't correspond to the user that sends this message");
+                }
+                
+            }else
             {
-                cmd.Parameters.AddWithValue("user_id", message.UserId);
-                cmd.Parameters.AddWithValue("text", message.Text);
-                cmd.Parameters.AddWithValue("created_date", message.CreatedDate);
-                cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
-               await cmd.ExecuteNonQueryAsync();
+                throw new Exception("The authorization header is either empty or isn't Bearer.");
             }
+
+            return Ok("Message added successfully");
        
         }
 

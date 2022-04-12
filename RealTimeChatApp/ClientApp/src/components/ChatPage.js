@@ -1,10 +1,12 @@
 ﻿import 'bootstrap/dist/css/bootstrap.css';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import Login from './Login';
 import '../custom.css';
 
 const ChatPage = () => {
     const [user, setUser] = useState("");
+    const [token, setToken] = useState("");
     const [channelId, setChannelId] = useState([]);
     const [channelPage, setChannelPage] = useState({});
     const [userId, setUserId] = useState(null);
@@ -14,35 +16,21 @@ const ChatPage = () => {
 
 
     let history = useHistory();
-
   
-    //useEffect(() => {
-    //    getUsername();
-    //    getChannels();
+  
+    useEffect(() => {       
+        getUser();
+    }, []);
 
-    //}, []);
 
-
-    const getUsername = () => {
+    const getUser = () => {
         const data = localStorage.getItem("user");
         const jsonData = JSON.parse(data);
         setUser(jsonData.name);
         setUserId(jsonData.id);
+        setToken(jsonData.password);
     };
 
-
-    //const getChannels = async () => {
-    //    const url = "https://localhost:5001/api/Channels";
-    //    try {
-    //        const response = await fetch(url)
-    //            .then(res => res.json())
- 
-
-    //    } catch (err) {
-    //        console.log(err);
-    //        return err;
-    //    }
-    //};
 
 
     const getMessages = async () => {
@@ -58,15 +46,13 @@ const ChatPage = () => {
 
 
 
-
-
     const postMessage = async (id, message, date, channelId) => {
         const url = "https://localhost:5001/api/Messages";
         try {
             const options = {
                 method: "POST",
-                headers: { 'Accept': 'application/json', "Content-type": "application/json" },
-                body: JSON.stringify({ UserId: id, Text: message, CreatedDate: date, ChannelId: channelId })
+                headers: { "Accept": "application/json", "Content-type": "application/json", "Authorization" : `Bearer ${token}`},
+                body: JSON.stringify({ UserName: user, UserId: id, Text: message, CreatedDate: date, ChannelId: channelId })
             };
             const response = await fetch(url, options)
         } catch (err) {
@@ -119,9 +105,9 @@ const ChatPage = () => {
                     <div className="col-3 rounded">
                         <p className="title rounded">CHANNELS</p>
                         <div className="channels">
-                            <button className="channel" type="button" onClick={setChannelPage(1)}>"#General"</button> 
-                            <button className="channel" type="button" onClick={setChannelPage(2)}>"#Sports"</button>
-                            <button className="channel" type="button" onClick={setChannelPage(3)}>"#Music"</button> 
+                            <button className="channel" type="button" onClick={() => setChannelPage(1)}>"#General"</button> 
+                            <button className="channel" type="button" onClick={() => setChannelPage(2)}>"#Sports"</button>
+                            <button className="channel" type="button" onClick={() => setChannelPage(3)}>"#Music"</button> 
                         </div>
                     </div>
                         <div className="col-3 rounded">

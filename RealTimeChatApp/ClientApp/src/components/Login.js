@@ -12,24 +12,19 @@ const Login = () => {
 
     let history = useHistory();
 
-
     useEffect(() => {
-        //localStorage.getItem("user") ? history.push("/Home") : console.log("welcome");
-
-        getUserIdCount();
+        let user = getUser();
+        user ? history.push('/Home') : history.push('/');      
     }, []);
 
-
-
+ 
 
     const getUserIdCount = async () => {
         const url = "https://localhost:5001/api/Users"
         try {
             const response = await fetch(url)
                 .then(res => res.json())
-                .then(res => console.log(res))
-                //.then(res => !res.length ? setId(1) : setId(res[0] + 1))
-
+                .then(res => res.length ? setId(res[0] + 1) : setId(1))
         } catch (err) {
             console.log(err);
             return err;
@@ -44,29 +39,21 @@ const Login = () => {
             const options = {
                 method: "POST",
                 headers: { 'Accept': 'application/json', "Content-type": "application/json" },
-                body: JSON.stringify({ Name: name, Password: password })
+                body: JSON.stringify({ Name: name.toLowerCase(), Password: password.toLowerCase() })
             };
             const response = await fetch(url, options)
                 .then(res => res.json())
 
-            console.log(response);
             if (!response.length) {
                 alert("Sorry there is no user with those credentials");
             } else {
-                console.log(response);
-                //let id = JSON.stringify({ response[0].id });
-                //let name = JSON.stringify({ response[0].name });
-                //let password = JSON.stringify({ response[0].password });
-                localStorage.setItem("user", JSON.stringify({ id: response[0].id, name: response[0].name, token: response[0].password }));
+                setUserInLS(response[0].id, response[0].name, response[0].password);
             }
-
         } catch (err) {
             console.log(err);
             return err;
         }
     };
-
-
 
 
 
@@ -77,8 +64,7 @@ const Login = () => {
                 alert("Make sure to fill both username and password");
                 return false;
             } else {
-            loginRequest(username, password);
-             
+                loginRequest(username, password);
             }
         } catch (err) {
             console.log(err);
@@ -87,84 +73,31 @@ const Login = () => {
 
 
 
-
-    const isTokenExpired = () => {
-        const token = this.getUserFromLS()
-    }
-
-
-    //const setUserInLS = (id, token) => {
-    //    localStorage.setItem("user", id, name, token);
-    //};
+    const setUserInLS = (id, name, token) => {
+        localStorage.setItem("user", JSON.stringify({ id: id, name: name, token: token }));
+        history.replace('/Home');
+    };
 
 
-    const getUserToken = () => {
+
+    const setTokenInAuthorizationHeader = () => {
         const user = JSON.parse(localStorage.getItem("user"));
-
-        console.log(user);
-        return user.token;
+        if (user && user.token) {
+            return { Authorization: 'Bearer' + user.token };
+        } else return {};
     }
 
 
 
-    const getUserId = () => {
-        const user = localStorage.getItem("user");
-        return user.id;
+    const getUser = () => {
+        const user = JSON.parse(localStorage.getItem("user"));
+        return user;
     }
 
-
-
-    const getUserName = () => {
-        const user = localStorage.getItem("user");
-        return user.name;
-    }
-
-    //const checkUser = async (name, password) => {
-    //    const url = "https://localhost:5001/api/Login";
-    //    try {
-    //        const options = {
-    //            method: "POST",
-    //            headers: { 'Accept': 'application/json', "Content-type": "application/json" },
-    //            body: JSON.stringify({ Name: name, Password: password })
-    //        };
-    //        const response = await fetch(url, options)
-    //            .then(res => res.json())
-
-    //        console.log(response);
-    //        if (!response.length) {
-    //            alert("Sorry there is no user with those credentials");
-    //        } else {
-    //            console.log(response);
-    //            localStorage.setItem("user", JSON.stringify({ id: response[0].id, name: response[0].name, token: response[0].password}));
-    //       // history.push("/Home");
-
-    //        }
-
-    //   } catch (err) {
-    //        console.log(err);
-    //        return err;
-    //    }
-    //};
-
-
-    //const SubmitLoginRequest = async (e) => {
-    //    e.preventDefault();
-    //    try {
-    //        if (username === "" || password === "") {
-    //            alert("Make sure to fill both username and password");
-    //            return false;
-    //        } else {
-    //            checkUser(username, password);
-    //        }
-    //    } catch (err) {
-    //        console.log(err);
-    //    }
-    //};
-
-    
 
 
     const showSignUpWindow = () => {
+        getUserIdCount();
         setShow(true);
     };
 
@@ -189,10 +122,10 @@ const Login = () => {
     };
 
 
+
     const signUp = () => {
         setShow(false);
-        postUser(id, username, password);
-   
+        postUser(id, username, password);   
     };
 
 

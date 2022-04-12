@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import ChatPage from './components/ChatPage';
 import Login from './components/Login';
-import Signup from './components/Signup';
+
 
 
 
 const App = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
     return (
@@ -15,7 +15,6 @@ const App = () => {
             <BrowserRouter>
                 <Switch>
                     <Route exact path={"/"} component={Login} />
-                    <Route exact path={"/Signup"} component={Signup} />
                     <Route exact path={"/Home"} component={ChatPage} />
                 </Switch>
             </BrowserRouter>

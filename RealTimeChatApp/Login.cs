@@ -67,7 +67,7 @@ namespace RealTimeChatApp
                                 };
                                 loggedUser.Add(userFound);
                             }
-                           
+                          
                         }
                           
                         }
