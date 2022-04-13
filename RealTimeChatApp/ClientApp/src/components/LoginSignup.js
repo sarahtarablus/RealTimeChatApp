@@ -157,9 +157,9 @@ const LoginSignup = () => {
                                setPassword(e.target.value)
                            }} /> 
                            </div>
-                            <button type="submit" className="btn btn-primary mx-sm-3 mb-2 mt-3" onClick={SubmitLoginRequest}>Login</button>
+                            <button type="submit" className="btn mx-sm-3 mb-2 mt-3" onClick={SubmitLoginRequest}>Login</button>
                                 <p className="or mx-sm-3 mb-1 mt-2">Don't have an account?</p>
-                            <button type="button" className="signup btn mx-sm-1 mb-2 mt-1 text-primary" onClick={showSignUpWindow}>Signup</button>
+                            <button type="button" className="signup btn mx-sm-1 mb-2 mt-1" onClick={showSignUpWindow}>Signup</button>
                    </form>
                    <Signup show={show} signup={signUp} handleUsername={(e) => { setUsername(e.target.value) }} handlePassword={(e) => {
                        setPassword(e.target.value)
