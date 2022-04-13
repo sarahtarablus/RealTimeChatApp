@@ -1,13 +1,13 @@
 ﻿import 'bootstrap/dist/css/bootstrap.css';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import Login from './Login';
+import LoginSignup from './LoginSignup';
 import '../custom.css';
 
 const ChatPage = () => {
     const [user, setUser] = useState("");
     const [token, setToken] = useState("");
-    const [channelId, setChannelId] = useState([]);
+    const [channelId, setChannelId] = useState(null);
     const [channelPage, setChannelPage] = useState({});
     const [userId, setUserId] = useState(null);
     const [messages, setMessages] = useState([{}]);
@@ -46,15 +46,16 @@ const ChatPage = () => {
 
 
 
-    const postMessage = async (id, message, date, channelId) => {
+    const postMessage = async (name, id, message, date, channelId) => {
         const url = "https://localhost:5001/api/Messages";
         try {
             const options = {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-type": "application/json", "Authorization" : `Bearer ${token}`},
-                body: JSON.stringify({ UserName: user, UserId: id, Text: message, CreatedDate: date, ChannelId: channelId })
+                body: JSON.stringify({ UserName: name, UserId: id, Text: message, CreatedDate: date, ChannelId: channelId })
             };
             const response = await fetch(url, options)
+                .then(res => console.log(res))
         } catch (err) {
             console.log(err);
             return err;
@@ -69,7 +70,8 @@ const ChatPage = () => {
         if (inputText !== "") {
             newMessage = { User: user, Message: inputText };
             setMessages(mes => [...mes, newMessage]);
-            postMessage(userId, inputText, date, 1);
+            console.log(user + " " +  userId +  " " + inputText + " " + date + " " + 1);
+            postMessage(user, userId, inputText, date, 1);
         } else {
             return false;
         }

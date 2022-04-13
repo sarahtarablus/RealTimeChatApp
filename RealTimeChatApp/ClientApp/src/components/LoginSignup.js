@@ -4,7 +4,7 @@ import ChatPage from './ChatPage';
 import Signup from './Signup';
 import '../custom.css';
 
-const Login = () => {
+const LoginSignup = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [id, setId] = useState(null);
@@ -124,8 +124,13 @@ const Login = () => {
 
 
     const signUp = () => {
-        setShow(false);
-        postUser(id, username, password);   
+        if (username === "" || password === "") {
+            alert("Make sure to fill both username and password");
+            return false;
+        } else {
+            setShow(false);
+            postUser(id, username, password); 
+        }         
     };
 
 
@@ -171,4 +176,4 @@ const Login = () => {
   
 
 
-export default Login;
+export default LoginSignup;
