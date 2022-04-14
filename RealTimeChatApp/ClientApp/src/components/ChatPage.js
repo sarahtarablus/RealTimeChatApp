@@ -12,16 +12,27 @@ const ChatPage = () => {
     const [userId, setUserId] = useState(null);
     const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState("");
-    const [inputValue, setInputValue] = useState(); //??
+    const [inputValue, setInputValue] = useState(); 
 
 
     let history = useHistory();
   
   
     useEffect(() => {       
-        getUser();
+        showPage();
     }, []);
 
+
+
+    const showPage = () => {
+        let userLocalStorage = localStorage.getItem("user")
+        if (!userLocalStorage) {
+            history.push('/')
+        } else {
+            history.push('/Home');
+            getUser();
+        }
+    } 
 
     const getUser = () => {
         const data = localStorage.getItem("user");
@@ -65,6 +76,7 @@ const ChatPage = () => {
 
 
     const sendMessage = async () => {
+        setInputValue("");
         let newMessage;
         let date = new Date().toJSON().slice(0, 10);
         if (inputText !== "") {

@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 using Npgsql;
 
 namespace RealTimeChatApp.Controllers
@@ -93,6 +97,10 @@ namespace RealTimeChatApp.Controllers
                         cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
                         await cmd.ExecuteNonQueryAsync();
                     }
+
+                    WebSocketServer wssv = new WebSocketServer("ws://127.0.0.1:7890");
+                    wssv.AddWebSocketService<ChatMessages>("/ChatMessages");
+                    wssv.Start(); 
                 }
                 else
                 {
@@ -103,11 +111,36 @@ namespace RealTimeChatApp.Controllers
             {
                 throw new Exception("The authorization header is either empty or isn't Bearer.");
             }
-
+          
             return Ok("Message added successfully");
        
         }
 
-      
+
+        //private static async Task Echo(WebSocket webSocket)
+        //{
+        //    var buffer = new byte[1024 * 4];
+        //    var receiveResult = await webSocket.ReceiveAsync(
+        //        new ArraySegment<byte>(buffer), CancellationToken.None);
+
+        //    while (!receiveResult.CloseStatus.HasValue)
+        //    {
+        //        await webSocket.SendAsync(
+        //            new ArraySegment<byte>(buffer, 0, receiveResult.Count),
+        //            receiveResult.MessageType,
+        //            receiveResult.EndOfMessage,
+        //            CancellationToken.None);
+
+        //        receiveResult = await webSocket.ReceiveAsync(
+        //            new ArraySegment<byte>(buffer), CancellationToken.None);
+        //    }
+
+        //    await webSocket.CloseAsync(
+        //        receiveResult.CloseStatus.Value,
+        //        receiveResult.CloseStatusDescription,
+        //        CancellationToken.None);
+        //}
+
+
     }
 }

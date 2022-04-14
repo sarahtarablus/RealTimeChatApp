@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "../custom.css";
 
-const Signup = ({ signup, show, handleUsername, handlePassword }) => {
+const Signup = ({ signup, show, value, handleUsername, handlePassword }) => {
     const showOrHide = show ? "modal display-block" : "modal display-none";
  
 
@@ -16,11 +16,11 @@ const Signup = ({ signup, show, handleUsername, handlePassword }) => {
                   </button>
                     <div className="form-group  mx-sm-5 mb-2 mt-2 pt-3">
                         <label htmlFor="username">Username</label>
-                        <input type="text" className="form-control" id="usernameInput" placeholder="Enter username" onChange={handleUsername} />
+                        <input type="text" className="form-control" id="usernameInput" placeholder="Enter username" value={value} onChange={handleUsername} />
                     </div>
                     <div className="form-group mx-sm-5 mb-2 pb-3">
                         <label htmlFor="password">Password</label>
-                        <input type="text" className="form-control" id="passwordInput" placeholder="Password" onChange={handlePassword} />
+                        <input type="text" className="form-control" id="passwordInput" placeholder="Password" value={value} onChange={handlePassword} />
                     </div>
                     <button type="submit" className="btn mx-sm-5 mb-2 mt-2 mb-4" onClick={signup}>Signup</button>
                 </form>
