@@ -74,6 +74,7 @@ namespace RealTimeChatApp.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] MessagesUsername message)
         {
+            string date = message.CreatedDate.ToString("yyyy - MM - dd");
             string authHeader = this.HttpContext.Request.Headers["Authorization"];
            
             if(authHeader != null && authHeader.StartsWith("Bearer"))
@@ -93,12 +94,12 @@ namespace RealTimeChatApp.Controllers
                     {
                         cmd.Parameters.AddWithValue("user_id", message.UserId);
                         cmd.Parameters.AddWithValue("text", message.Text);
-                        cmd.Parameters.AddWithValue("created_date", message.CreatedDate);
+                        cmd.Parameters.AddWithValue("created_date", date);
                         cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
                         await cmd.ExecuteNonQueryAsync();
                     }
 
-                    WebSocketServer wssv = new WebSocketServer("ws://127.0.0.1:7890");
+                    WebSocketServer wssv = new WebSocketServer("ws://127.0.0.1:7891");
                     wssv.AddWebSocketService<ChatMessages>("/ChatMessages");
                     wssv.Start(); 
                 }

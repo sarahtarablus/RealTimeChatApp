@@ -22,7 +22,7 @@ const LoginSignup = () => {
  
 
     const getUserIdCount = async () => {
-        const url = "https://localhost:5001/api/Users"
+        const url = "https://localhost:5001/api/Users";
         try {
             const response = await fetch(url)
                 .then(res => res.json())
@@ -40,7 +40,7 @@ const LoginSignup = () => {
         try {
             const options = {
                 method: "POST",
-                headers: { 'Accept': 'application/json', "Content-type": "application/json" },
+                headers: { "Content-type": "application/json" },
                 body: JSON.stringify({ Name: name.toLowerCase(), Password: password.toLowerCase() })
             };
             const response = await fetch(url, options)
@@ -171,7 +171,7 @@ const LoginSignup = () => {
                                 <p className="or mx-sm-3 mb-1 mt-2">Don't have an account?</p>
                             <button type="button" className="signup btn mx-sm-1 mb-2 mt-1" onClick={showSignUpWindow}>Signup</button>
                    </form>
-                   <Signup show={show} signup={signUp} value={inputValue} handleUsername={(e) => { setUsername(e.target.value) }} handlePassword={(e) => {
+                   <Signup show={show} signup={signUp} value={inputValue} handleUsername={(e) => {setUsername(e.target.value) }} handlePassword={(e) => {
                        setPassword(e.target.value)
                    }}>
                    </Signup>
