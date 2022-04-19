@@ -31,6 +31,21 @@ namespace RealTimeChatApp
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.AddSignalR();
+
+            services.AddSingleton<IMessageSender, MessageSender>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ClientPermission", builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,10 +66,18 @@ namespace RealTimeChatApp
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseCors("ClientPermission");
+
             app.UseRouting();
+
+            //app.UseSignalR(routes =>
+            //{
+            //    routes.MapHub<ChatHub>("/ChatHub");
+            //});
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/ChatHub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");

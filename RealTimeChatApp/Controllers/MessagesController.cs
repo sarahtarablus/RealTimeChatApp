@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 using Npgsql;
+using Microsoft.AspNetCore.SignalR;
 
 namespace RealTimeChatApp.Controllers
 {
@@ -19,65 +20,75 @@ namespace RealTimeChatApp.Controllers
     public class MessagesController : ControllerBase
     {
 
-        [HttpGet]
-        public async Task<IEnumerable<Messages>> GetAsync(DateTime createdDate, int channelId)
+        private readonly IMessageSender _messageSender;
+        private readonly IHubContext<ChatHub> _chatHub;
+
+        public MessagesController(IMessageSender messageSender, IHubContext<ChatHub> chatHub)
         {
-            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "SELECT * FROM public.messages WHERE created_date=@created_date AND channel_id=@channel_id";
-            var messages = new List<Messages>();
-
-
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-
-            NpgsqlParameter parameter = new NpgsqlParameter();
-            parameter.ParameterName = "@created_date";
-            parameter.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date;
-            parameter.Direction = System.Data.ParameterDirection.Input;
-            parameter.Value = createdDate;
-
-            NpgsqlParameter parameter2 = new NpgsqlParameter();
-            parameter2.ParameterName = "@channel_id";
-            parameter2.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bigint;
-            parameter2.Direction = System.Data.ParameterDirection.Input;
-            parameter2.Value = channelId;
-
-
-
-            await using (var cmd = new NpgsqlCommand(command, conn))
-            {
-                cmd.Parameters.Add(parameter);
-                cmd.Parameters.Add(parameter2);
-                await using (var reader = await cmd.ExecuteReaderAsync())
-                {
-
-                    while (await reader.ReadAsync())
-                    {
-                        var message = new Messages()
-                        {
-
-                            UserId = reader.GetInt32(0),
-                            Text = reader.GetString(1),
-                            CreatedDate = reader.GetDateTime(2),
-                            ChannelId = reader.GetInt32(3)
-                        };
-                        messages.Add(message);
-                    }
-                }
-            }
-            return messages;
-            
+            _messageSender = messageSender;
+            _chatHub = chatHub;
         }
+
+        //[HttpGet]
+        //public async Task<IEnumerable<Messages>> GetAsync(DateTime createdDate, int channelId)
+        //{
+        //    var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+        //    var command = "SELECT * FROM public.messages WHERE created_date=@created_date AND channel_id=@channel_id";
+        //    var messages = new List<Messages>();
+
+
+        //    await using var conn = new NpgsqlConnection(connectionString);
+        //    await conn.OpenAsync();
+
+        //    NpgsqlParameter parameter = new NpgsqlParameter();
+        //    parameter.ParameterName = "@created_date";
+        //    parameter.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Date;
+        //    parameter.Direction = System.Data.ParameterDirection.Input;
+        //    parameter.Value = createdDate;
+
+        //    NpgsqlParameter parameter2 = new NpgsqlParameter();
+        //    parameter2.ParameterName = "@channel_id";
+        //    parameter2.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bigint;
+        //    parameter2.Direction = System.Data.ParameterDirection.Input;
+        //    parameter2.Value = channelId;
+
+
+
+        //    await using (var cmd = new NpgsqlCommand(command, conn))
+        //    {
+        //        cmd.Parameters.Add(parameter);
+        //        cmd.Parameters.Add(parameter2);
+        //        await using (var reader = await cmd.ExecuteReaderAsync())
+        //        {
+
+        //            while (await reader.ReadAsync())
+        //            {
+        //                var message = new Messages()
+        //                {
+
+        //                    UserId = reader.GetInt32(0),
+        //                    Text = reader.GetString(1),
+        //                    CreatedDate = reader.GetDateTime(2),
+        //                    ChannelId = reader.GetInt32(3)
+        //                };
+        //                messages.Add(message);
+        //            }
+        //        }
+        //    }
+        //    return messages;
+
+        //}
 
 
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] MessagesUsername message)
+        public async Task<IActionResult> PostAsync([FromBody] Messages message)
         {
-            string date = message.CreatedDate.ToString("yyyy - MM - dd");
+
             string authHeader = this.HttpContext.Request.Headers["Authorization"];
-           
-            if(authHeader != null && authHeader.StartsWith("Bearer"))
+        
+
+            if (authHeader != null && authHeader.StartsWith("Bearer"))
             {               
                 string encodedToken = authHeader.Substring("Bearer".Length).Trim();
                 string encodedUsername = encodedToken.Substring(1, encodedToken.Length - 2);               
@@ -86,6 +97,7 @@ namespace RealTimeChatApp.Controllers
                 {
                     var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
                     var command = $"INSERT INTO public.messages (user_id, text, created_date, channel_id) VALUES (@user_id, @text, @created_date, @channel_id);";
+                    DateTime date = DateTime.Now;
 
                     await using var conn = new NpgsqlConnection(connectionString);
                     await conn.OpenAsync();
@@ -98,10 +110,8 @@ namespace RealTimeChatApp.Controllers
                         cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
                         await cmd.ExecuteNonQueryAsync();
                     }
-
-                    WebSocketServer wssv = new WebSocketServer("ws://127.0.0.1:7891");
-                    wssv.AddWebSocketService<ChatMessages>("/ChatMessages");
-                    wssv.Start(); 
+                    var data = _messageSender.SendMessage(message.UserName, message.Text);
+                    await _chatHub.Clients.All.SendAsync("ShowMessage", data);
                 }
                 else
                 {

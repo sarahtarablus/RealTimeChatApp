@@ -1,6 +1,6 @@
 ﻿import 'bootstrap/dist/css/bootstrap.css';
 import React, { useState, useEffect } from 'react';
-import socketIOClient from 'socket.io-client';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useHistory } from 'react-router-dom';
 import LoginSignup from './LoginSignup';
 import '../custom.css';
@@ -13,29 +13,45 @@ const ChatPage = () => {
     const [channelId, setChannelId] = useState(null);
     const [channelPage, setChannelPage] = useState({});
     const [userId, setUserId] = useState(null);
+    const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState("");
-    const [inputValue, setInputValue] = useState(); 
+    const [connection, setConnection] = useState(null);
+ 
 
-   
 
     let history = useHistory();
 
-
-    //const socket = socketIOClient("https://127.0.0.1:7891");
+    
    
   
     useEffect(() => {       
         showPage();
-        let year = new Date().getFullYear();
-        let month = new Date().getUTCMonth() + 1;
-        let day = new Date().getUTCDate();
-        let date = year + "-" + month + "-" + day;
-        console.log(date);
-        //socket.on("message", message => {
-        //    console.log(message);
-        //})
+        const newConnection = new HubConnectionBuilder()
+            .withUrl("https://localhost:5001/api/Messages ")
+            .withAutomaticReconnect()
+            .build();
+        setConnection(newConnection);
+        console.log(connection)
     }, []);
+
+    //useEffect(() => {
+    //    startConnection();
+    //}, [connection]);
+
+
+
+    const startConnection = () => {
+        if (connection) {
+            connection.start()
+                .then(res => {
+                    console.log('Connection started')
+                    connection.on("ShowMessage", msg => {
+                        console.log(msg)
+                    });
+                });
+        }
+    }
 
 
 
@@ -45,18 +61,7 @@ const ChatPage = () => {
             history.push('/')
         } else {
             history.push('/Home');
-            getUser();
-        }
-    }
-
-
-
-    const getMessages = (newLogin) => {
-        const data = JSON.parse(newLogin.data);
-        console.log("hello from server");
-        if (data.type === "newLogin") {
-            let newMessage = { User: data.UserName, Message: data.Text };
-            setMessages(mes => [...mes, newMessage]);
+            let username = getUser();
         }
     }
 
@@ -72,13 +77,13 @@ const ChatPage = () => {
 
 
 
-    const postMessage = async (name, id, message, date, channelId) => {
+    const postMessage = async (name, id, message,channelId) => {
         const url = "https://localhost:5001/api/Messages";
         try {
             const options = {
                 method: "POST",
-                headers: { "Authorization": `Bearer ${token}`, "Content-type": "application/json" },
-                body: JSON.stringify({ UserName: name, UserId: id, Text: message, CreatedDate: date, ChannelId: channelId })
+                headers: { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" },
+                body: JSON.stringify({ UserName: name, UserId: id, Text: message, ChannelId: channelId })
             };
             console.log(options);
             const response = await fetch(url, options)
@@ -92,10 +97,8 @@ const ChatPage = () => {
 
 
     const sendMessage = async () => {
-        //setInputValue(""); 
-        let date = new Date().toJSON().slice(0, 10);
         if (inputText !== "") {
-            postMessage(user, userId, inputText, date, 1); 
+            postMessage(user, userId, inputText, 1); 
         } else {
             return false;
         }
@@ -132,7 +135,7 @@ const ChatPage = () => {
                         <p className="title channel-column rounded">CHANNELS</p>
                         <div className="channels">
                             <div className="row d-flex flex-column h-100 buttons">
-                                <button className="flex-item channel" type="button" onClick={() => setChannelPage(1)}>#General</button> 
+                                <button className="flex-item channel" type="button" onClick={startConnection}>#General</button> 
                                 <button className="flex-item channel" type="button" onClick={() => setChannelPage(2)}>#Sports</button>
                                 <button className="flex-item channel" type="button" onClick={() => setChannelPage(3)}>#Music</button>
                             </div>
@@ -159,7 +162,7 @@ const ChatPage = () => {
               
            
                 <div className="input-group">
-                    <input tyep="text" className="form-control" placeholder="Text here" value={inputValue} onChange={(e) => setInputText(e.target.value)} />
+                    <input type="text" className="form-control" placeholder="Text here" onChange={(e) => setInputText(e.target.value)}/>
                     <div className="input-group-append">
                         <button className="btn" type="button" onClick={sendMessage}>Send</button>
                         </div>
