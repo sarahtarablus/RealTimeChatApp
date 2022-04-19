@@ -57,17 +57,23 @@ const ChatPage = () => {
 
 
     const isLoggedIn = () => {
+        const userLS = getUserInLS();
+        if (userLS) {
+            const decodedJwt = jwt(userLS);
+            if (decodedJwt.exp * 1000 < Date.now()) {
+                logOut();
+            } else history.push('/Home');
+        }
+    }
+
+
+
+    const getUserInLS = () => {
         const userLS = JSON.parse(localStorage.getItem("user"));
         setUser(userLS.name);
         setUserId(userLS.id);
         setToken(userLS.token);
-        if (userLS) {
-            const decodedJwt = jwt(userLS.token);
-            if (decodedJwt.exp * 1000 < Date.now()) {
-                localStorage.removeItem("user");
-                history.push('/');
-            } else history.push('/Home');
-        }
+        return userLS.token;
     }
 
 
