@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useHistory } from 'react-router-dom';
+import jwt from "jwt-decode";
 import LoginSignup from './LoginSignup';
 import '../custom.css';
 
@@ -25,8 +26,8 @@ const ChatPage = () => {
     
    
   
-    useEffect(() => {       
-        showPage();
+    useEffect(() => {
+        isLoggedIn();
         const newConnection = new HubConnectionBuilder()
             .withUrl("https://localhost:5001/api/Messages ")
             .withAutomaticReconnect()
@@ -55,25 +56,20 @@ const ChatPage = () => {
 
 
 
-    const showPage = () => {
-        let userLocalStorage = localStorage.getItem("user")
-        if (!userLocalStorage) {
-            history.push('/')
-        } else {
-            history.push('/Home');
-            let username = getUser();
+    const isLoggedIn = () => {
+        const userLS = JSON.parse(localStorage.getItem("user"));
+        setUser(userLS.name);
+        setUserId(userLS.id);
+        setToken(userLS.token);
+        if (userLS) {
+            const decodedJwt = jwt(userLS.token);
+            if (decodedJwt.exp * 1000 < Date.now()) {
+                localStorage.removeItem("user");
+                history.push('/');
+            } else history.push('/Home');
         }
     }
 
-
-
-    const getUser = () => {
-        const data = localStorage.getItem("user");
-        const jsonData = JSON.parse(data);
-        setUser(jsonData.name);
-        setUserId(jsonData.id);
-        setToken(jsonData.token);
-    };
 
 
 
