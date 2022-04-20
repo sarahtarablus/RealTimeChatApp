@@ -29,16 +29,17 @@ const ChatPage = () => {
     useEffect(() => {
         isLoggedIn();
         const newConnection = new HubConnectionBuilder()
-            .withUrl("https://localhost:5001/api/Messages ")
+            .withUrl("https://localhost:5001/hubs/chat ")
             .withAutomaticReconnect()
             .build();
         setConnection(newConnection);
-        console.log(connection)
+        console.log(newConnection)
     }, []);
 
-    //useEffect(() => {
-    //    startConnection();
-    //}, [connection]);
+
+    useEffect(() => {
+        startConnection();
+    }, [connection]);
 
 
 
@@ -47,7 +48,7 @@ const ChatPage = () => {
             connection.start()
                 .then(res => {
                     console.log('Connection started')
-                    connection.on("ShowMessage", msg => {
+                    connection.on("receiveMessage", msg => {
                         console.log(msg)
                     });
                 });
@@ -160,9 +161,7 @@ const ChatPage = () => {
                         ))}
                
                     </div>
-                </div>
-              
-           
+                </div>          
                 <div className="input-group">
                     <input type="text" className="form-control" placeholder="Text here" onChange={(e) => setInputText(e.target.value)}/>
                     <div className="input-group-append">

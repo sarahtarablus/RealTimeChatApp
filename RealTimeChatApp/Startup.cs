@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,9 +31,9 @@ namespace RealTimeChatApp
                 configuration.RootPath = "ClientApp/build";
             });
 
+
             services.AddSignalR();
 
-            services.AddSingleton<IMessageSender, MessageSender>();
 
             services.AddCors(options =>
             {
@@ -61,6 +61,7 @@ namespace RealTimeChatApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+        
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -70,14 +71,10 @@ namespace RealTimeChatApp
 
             app.UseRouting();
 
-            //app.UseSignalR(routes =>
-            //{
-            //    routes.MapHub<ChatHub>("/ChatHub");
-            //});
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<ChatHub>("/ChatHub");
+
+                endpoints.MapHub<ChatHub>("/hubs/chat");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
