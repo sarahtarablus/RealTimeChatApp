@@ -11,7 +11,7 @@ const ChatPage = () => {
     const [user, setUser] = useState([]);
     const [users, setUsers] = useState([]);
     const [token, setToken] = useState("");
-    const [channelId, setChannelId] = useState(null);
+    const [channelId, setChannelId] = useState(1);
     const [channelPage, setChannelPage] = useState({});
     const [userId, setUserId] = useState(null);
     const [message, setMessage] = useState("");
@@ -29,7 +29,7 @@ const ChatPage = () => {
     useEffect(() => {
         isLoggedIn();
         const newConnection = new HubConnectionBuilder()
-            .withUrl("https://localhost:5001/hubs/chat ")
+            .withUrl("/message ")
             .withAutomaticReconnect()
             .build();
         setConnection(newConnection);
@@ -39,6 +39,8 @@ const ChatPage = () => {
 
     useEffect(() => {
         startConnection();
+        sendUser();
+        getUsers();
     }, [connection]);
 
 
@@ -47,14 +49,37 @@ const ChatPage = () => {
         if (connection) {
             connection.start()
                 .then(res => {
-                    console.log('Connection started')
-                    connection.on("receiveMessage", msg => {
-                        console.log(msg)
-                    });
+                    console.log('Connection started');                  
+                    getMessages();
                 });
         }
     }
 
+
+
+    const getMessages = () => {
+        connection.on("ReceiveMessage", msg => {
+            let newMessage = { User: msg.userName, Message: msg.message };
+            setMessages(msg => [...msg, newMessage]);
+        });
+    }
+
+
+
+    const sendUser = () => {
+        const userLS = JSON.parse(localStorage.getItem("user"));
+        connection.send("ReceiveUser", userLS.name)
+        .then(data => console.log(data))
+    }
+
+
+
+    const getUsers = () => {
+        connection.on("ReceiveUser", user => {
+            let newUser = { UserName: user.userName};
+            setUser(usr => [...usr, newUser]);
+        });
+    }
 
 
     const isLoggedIn = () => {
@@ -80,7 +105,7 @@ const ChatPage = () => {
 
 
 
-    const postMessage = async (name, id, message,channelId) => {
+    const postMessage = async (name, id, message, channelId) => {
         const url = "https://localhost:5001/api/Messages";
         try {
             const options = {
@@ -88,7 +113,6 @@ const ChatPage = () => {
                 headers: { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" },
                 body: JSON.stringify({ UserName: name, UserId: id, Text: message, ChannelId: channelId })
             };
-            console.log(options);
             const response = await fetch(url, options)
                 .then(res => console.log(res))
         } catch (err) {
@@ -101,17 +125,11 @@ const ChatPage = () => {
 
     const sendMessage = async () => {
         if (inputText !== "") {
-            postMessage(user, userId, inputText, 1); 
+            postMessage(user, userId, inputText, channelId); 
         } else {
             return false;
         }
     };
-
-
-    const showChannelChat = (e) => {
-        e.preventDefault();
-        console.log(e.target);
-    }
 
 
 
@@ -138,9 +156,9 @@ const ChatPage = () => {
                         <p className="title channel-column rounded">CHANNELS</p>
                         <div className="channels">
                             <div className="row d-flex flex-column h-100 buttons">
-                                <button className="flex-item channel" type="button" onClick={startConnection}>#General</button> 
-                                <button className="flex-item channel" type="button" onClick={() => setChannelPage(2)}>#Sports</button>
-                                <button className="flex-item channel" type="button" onClick={() => setChannelPage(3)}>#Music</button>
+                                <button className="flex-item channel" type="button" onClick={() => setChannelId(1)}>#General</button>
+                                <button className="flex-item channel" type="button" onClick={() => setChannelId(2)}>#Sports</button>
+                                <button className="flex-item channel" type="button" onClick={() => setChannelId(3)}>#Music</button>
                             </div>
                         </div>
                     </div>

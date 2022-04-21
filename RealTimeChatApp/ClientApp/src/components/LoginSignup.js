@@ -8,6 +8,7 @@ const LoginSignup = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [inputValue, setInputValue] = useState();
+    const [connection, setConnection] = useState(null);
     const [id, setId] = useState(null);
     const [show, setShow] = useState(false);
     
@@ -19,7 +20,9 @@ const LoginSignup = () => {
         user ? history.push('/Home') : history.push('/');      
     }, []);
 
- 
+
+
+
 
     const getUserIdCount = async () => {
         const url = "https://localhost:5001/api/Users";

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Npgsql;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 
 
 namespace RealTimeChatApp
@@ -16,7 +17,6 @@ namespace RealTimeChatApp
     [ApiController]
     public class LoginController : ControllerBase
     {
-  
 
         [HttpPost]
         public async Task<IActionResult> PostUser([FromBody] LoginUser user)

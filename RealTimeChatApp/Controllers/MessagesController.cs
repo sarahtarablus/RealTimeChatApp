@@ -20,23 +20,19 @@ namespace RealTimeChatApp.Controllers
     public class MessagesController : ControllerBase
     {
 
-        //private readonly IMessageSender _messageSender;
-        //private readonly IHubContext<ChatHub> _chatHub;
+        private readonly IHubContext<MessageHub> _messageHub;
 
-        //public MessagesController(IMessageSender messageSender, IHubContext<ChatHub> chatHub)
-        //{
-        //    _messageSender = messageSender;
-        //    _chatHub = chatHub;
-        //}
+        public MessagesController(IHubContext<MessageHub> messageHub)
+        {
+
+            _messageHub = messageHub;
+        }
 
 
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] Messages message)
         {
-
             string authHeader = this.HttpContext.Request.Headers["Authorization"];
-        
-
             if (authHeader != null && authHeader.StartsWith("Bearer"))
             {               
                 string encodedToken = authHeader.Substring("Bearer".Length).Trim();
@@ -59,8 +55,11 @@ namespace RealTimeChatApp.Controllers
                         cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
                         await cmd.ExecuteNonQueryAsync();
                     }
-                    //var data = _messageSender.SendMessage(message.UserName, message.Text);
-                    //await _chatHub.Clients.All.SendAsync("ShowMessage", data);
+                    var msg = new MessageFromUser();
+                    msg.UserName = message.UserName;
+                    msg.Message = message.Text;
+                    msg.ChannelId = message.ChannelId;
+                    await _messageHub.Clients.All.SendAsync("ReceiveMessage", msg);
                 }
                 else
                 {
