@@ -33,7 +33,6 @@ const ChatPage = () => {
             .withAutomaticReconnect()
             .build();
         setConnection(newConnection);
-        console.log(newConnection)
     }, []);
 
 
@@ -56,17 +55,16 @@ const ChatPage = () => {
 
 
     const displayMessages = async (channel) => {
+        let message = {};
         const url = "https://localhost:5001/api/Messages"; //?channelId=${channel}`;
         try {
-            //const options = {
-            //    method: "POST",
-            //    headers: { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" },
-            //    body: JSON.stringify({ UserName: name, UserId: id, Text: message, ChannelId: channelId })
-            //};
-
             const response = await fetch(url)
                 .then(res => res.json())
-                .then(res => console.log(res))
+
+            response.forEach((msg) => {
+                message = { user: msg.UserName, message: msg.Message };
+                setMessages(msg => [...msg, message])
+            }
         } catch (err) {
             console.log(err);
             return err;

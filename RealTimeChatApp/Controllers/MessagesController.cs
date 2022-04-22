@@ -30,7 +30,6 @@ namespace RealTimeChatApp.Controllers
 
 
 
-        [HttpGet]//("{channelId}")]
         public async Task<IEnumerable<MessageFromUser>> GetMessages()//(int channelId)
         {
             List<MessageFromUser> messages = new List<MessageFromUser>();
@@ -61,13 +60,11 @@ namespace RealTimeChatApp.Controllers
                 }
 
             }
-            await _messageHub.Clients.All.SendAsync("ReceiveMessages", messages);
             return messages;
         }
 
 
-
-
+       
 
 
         [HttpPost]
