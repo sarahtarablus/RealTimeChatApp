@@ -30,37 +30,40 @@ namespace RealTimeChatApp.Controllers
 
 
 
-        //[HttpGet]
-        //public async Task<Messages> GetMessages(int id)
-        //{
-        //    List<MessageFromUser> messages = new List<MessageFromUser>();
-        //    var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-        //    var command = "SELECT * FROM public.messages WHERE channel_id=@channel_id";
+        [HttpGet]//("{channelId}")]
+        public async Task<IEnumerable<MessageFromUser>> GetMessages()//(int channelId)
+        {
+            List<MessageFromUser> messages = new List<MessageFromUser>();
+            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+            var command = "SELECT * FROM public.messages";// WHERE channel_id=@channel_id";
 
-        //    await using var conn = new NpgsqlConnection(connectionString);
-        //    await conn.OpenAsync();
-
-
-        //    await using (var cmd = new NpgsqlCommand(command, conn))
-        //    {
-        //        cmd.Parameters.AddWithValue("channel_id", id);
-        //        await using (var reader = await cmd.ExecuteReaderAsync())
-        //        {
-        //            while (await reader.ReadAsync())
-        //            {
-        //                var message = new MessageFromUser()
-        //                {
-        //                    UserName = reader.GetString()
-        //                }
+            await using var conn = new NpgsqlConnection(connectionString);
+            await conn.OpenAsync();
 
 
-        //            }
+            await using (var cmd = new NpgsqlCommand(command, conn))
+            {
+                //cmd.Parameters.AddWithValue("channel_id", channelId);
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var message = new MessageFromUser()
+                        {
+                            UserName = reader.GetString(4),
+                            Message = reader.GetString(1),
+                            ChannelId = reader.GetInt32(3)
+                        };
 
-        //        }
+                        messages.Add(message);
+                    }
 
-        //    }
-        //    return usersCount;
-        //}
+                }
+
+            }
+            await _messageHub.Clients.All.SendAsync("ReceiveMessages", messages);
+            return messages;
+        }
 
 
 

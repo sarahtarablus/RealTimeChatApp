@@ -48,14 +48,34 @@ const ChatPage = () => {
             connection.start()
                 .then(res => {
                     console.log('Connection started');
-                    getMessages();
+                    getMessage();
                 });
         }
     }
 
 
 
-    const getMessages = () => {
+    const displayMessages = async (channel) => {
+        const url = "https://localhost:5001/api/Messages"; //?channelId=${channel}`;
+        try {
+            //const options = {
+            //    method: "POST",
+            //    headers: { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" },
+            //    body: JSON.stringify({ UserName: name, UserId: id, Text: message, ChannelId: channelId })
+            //};
+
+            const response = await fetch(url)
+                .then(res => res.json())
+                .then(res => console.log(res))
+        } catch (err) {
+            console.log(err);
+            return err;
+        }
+    }
+
+
+
+    const getMessage = () => {
         connection.on("ReceiveMessage", msg => {
             let newMessage = { User: msg.userName, Message: msg.message };
             setMessages(msg => [...msg, newMessage]);
@@ -70,7 +90,10 @@ const ChatPage = () => {
             const decodedJwt = jwt(userLS);
             if (decodedJwt.exp * 1000 < Date.now()) {
                 logOut();
-            } else history.push('/Home');
+            } else {
+                history.push('/Home');
+                displayMessages(channelId);
+            }
         }
     }
 
