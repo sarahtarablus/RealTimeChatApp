@@ -1,4 +1,4 @@
-﻿import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import React, { useState, useEffect } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useHistory } from 'react-router-dom';
@@ -18,14 +18,14 @@ const ChatPage = () => {
     const [messages, setMessages] = useState([{}]);
     const [inputText, setInputText] = useState("");
     const [connection, setConnection] = useState(null);
- 
+
 
 
     let history = useHistory();
 
-    
-   
-  
+
+
+
     useEffect(() => {
         isLoggedIn();
         const newConnection = new HubConnectionBuilder()
@@ -39,8 +39,6 @@ const ChatPage = () => {
 
     useEffect(() => {
         startConnection();
-        sendUser();
-        getUsers();
     }, [connection]);
 
 
@@ -49,7 +47,7 @@ const ChatPage = () => {
         if (connection) {
             connection.start()
                 .then(res => {
-                    console.log('Connection started');                  
+                    console.log('Connection started');
                     getMessages();
                 });
         }
@@ -66,20 +64,20 @@ const ChatPage = () => {
 
 
 
-    const sendUser = () => {
-        const userLS = JSON.parse(localStorage.getItem("user"));
-        connection.send("ReceiveUser", userLS.name)
-        .then(data => console.log(data))
-    }
+    //const sendUser = () => {
+    //    const userLS = JSON.parse(localStorage.getItem("user"));
+    //    connection.send("ReceiveUser", userLS.name)
+    //        .then(data => console.log(data))
+    //}
 
 
 
-    const getUsers = () => {
-        connection.on("ReceiveUser", user => {
-            let newUser = { UserName: user.userName};
-            setUser(usr => [...usr, newUser]);
-        });
-    }
+    //const getUsers = () => {
+    //    connection.on("ReceiveUser", user => {
+    //        let newUser = { UserName: user.userName };
+    //        setUser(usr => [...usr, newUser]);
+    //    });
+    //}
 
 
     const isLoggedIn = () => {
@@ -125,11 +123,29 @@ const ChatPage = () => {
 
     const sendMessage = async () => {
         if (inputText !== "") {
-            postMessage(user, userId, inputText, channelId); 
+            postMessage(user, userId, inputText, channelId);
         } else {
             return false;
         }
     };
+
+
+    const changeChannel1 = () => {
+        setChannelId(1)
+        history.push('/Home')
+    }
+
+
+    const changeChannel2 = () => {
+        setChannelId(2)
+        history.push('/Home/Sports')
+    }
+
+
+    const changeChannel3 = () => {
+        setChannelId(3)
+        history.push('/Home/Music')
+    }
 
 
 
@@ -143,9 +159,9 @@ const ChatPage = () => {
 
 
 
- 
+
     return (
-      <div>
+        <div>
             <div className="container rounded">
                 <p className="title-1">Let's chat</p>
                 <button className="btn logout" type="button" onClick={logOut}>LOGOUT</button>
@@ -156,20 +172,20 @@ const ChatPage = () => {
                         <p className="title channel-column rounded">CHANNELS</p>
                         <div className="channels">
                             <div className="row d-flex flex-column h-100 buttons">
-                                <button className="flex-item channel" type="button" onClick={() => setChannelId(1)}>#General</button>
-                                <button className="flex-item channel" type="button" onClick={() => setChannelId(2)}>#Sports</button>
-                                <button className="flex-item channel" type="button" onClick={() => setChannelId(3)}>#Music</button>
+                                <button className="flex-item channel" type="button" onClick={changeChannel1}>#General</button>
+                                <button className="flex-item channel" type="button" onClick={changeChannel2}>#Sports</button>
+                                <button className="flex-item channel" type="button" onClick={changeChannel3}>#Music</button>
                             </div>
                         </div>
                     </div>
-                        <div className="col-2 rounded">
+                    <div className="col-2 rounded">
                         <p className="title rounded">ONLINE</p>
                         <div className="user">
                             {users.map((u, index) => {
                                 <p className="userName" key={index}>{u}</p>
-                            })}                                          
+                            })}
                         </div>
-                        </div>
+                    </div>
                     <div className="col-8 bg-light rounded">
                         {messages.map((message, index) => (
                             <div className="message bg-light" key={index}>
@@ -177,22 +193,22 @@ const ChatPage = () => {
                                 <p className="msg-msg bg-light">{message.Message}</p>
                             </div>
                         ))}
-               
+
                     </div>
-                </div>          
+                </div>
                 <div className="input-group">
-                    <input type="text" className="form-control" placeholder="Text here" onChange={(e) => setInputText(e.target.value)}/>
+                    <input type="text" className="form-control" placeholder="Text here" onChange={(e) => setInputText(e.target.value)} />
                     <div className="input-group-append">
                         <button className="btn" type="button" onClick={sendMessage}>Send</button>
-                        </div>
+                    </div>
                 </div>
             </div>
-      </div>
+        </div>
 
 
-        );
-    
-    
+    );
+
+
 }
 
 export default ChatPage;

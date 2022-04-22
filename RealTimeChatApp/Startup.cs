@@ -73,7 +73,6 @@ namespace RealTimeChatApp
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<UserHub>("/user");
                 endpoints.MapHub<MessageHub>("/message");
                 endpoints.MapControllerRoute(
                     name: "default",

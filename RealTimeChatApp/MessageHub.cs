@@ -16,6 +16,11 @@ namespace RealTimeChatApp
         {
             return base.OnDisconnectedAsync(exception);
         }
+
+        public void SendUser(string user)
+        {
+            Clients.All.SendAsync("ReceiveUser", user);
+        }
     }
 }
 

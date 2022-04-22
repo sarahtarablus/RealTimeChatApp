@@ -16,6 +16,8 @@ const App = () => {
                 <Switch>
                     <Route exact path={"/"} component={LoginSignup} />
                     <Route exact path={"/Home"} component={ChatPage} />
+                    <Route exact path={"/Home/Sports"} component={ChatPage} />
+                    <Route exact path={"/Home/Music"} component={ChatPage} />
                 </Switch>
             </BrowserRouter>
         </div>
@@ -24,4 +26,3 @@ const App = () => {
 }
 
 export default App;
-
