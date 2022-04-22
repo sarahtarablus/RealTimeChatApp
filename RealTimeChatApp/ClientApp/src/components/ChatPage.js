@@ -64,22 +64,6 @@ const ChatPage = () => {
 
 
 
-    //const sendUser = () => {
-    //    const userLS = JSON.parse(localStorage.getItem("user"));
-    //    connection.send("ReceiveUser", userLS.name)
-    //        .then(data => console.log(data))
-    //}
-
-
-
-    //const getUsers = () => {
-    //    connection.on("ReceiveUser", user => {
-    //        let newUser = { UserName: user.userName };
-    //        setUser(usr => [...usr, newUser]);
-    //    });
-    //}
-
-
     const isLoggedIn = () => {
         const userLS = getUserInLS();
         if (userLS) {
@@ -181,9 +165,7 @@ const ChatPage = () => {
                     <div className="col-2 rounded">
                         <p className="title rounded">ONLINE</p>
                         <div className="user">
-                            {users.map((u, index) => {
-                                <p className="userName" key={index}>{u}</p>
-                            })}
+                            <p className="userName">{user}</p>
                         </div>
                     </div>
                     <div className="col-8 bg-light rounded">
