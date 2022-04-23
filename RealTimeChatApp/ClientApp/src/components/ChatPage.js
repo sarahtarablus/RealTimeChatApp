@@ -48,22 +48,30 @@ const ChatPage = () => {
                 .then(res => {
                     console.log('Connection started');
                     getMessage();
+                   
+
                 });
         }
     }
 
 
 
-    const displayMessages = async (channel) => {
-        let message = {};
-        const url = "https://localhost:5001/api/Messages"; //?channelId=${channel}`;
+    const getMessages = async (channel) => {
+        const url = "https://localhost:5001/api/Messages/GetMessages"; 
         try {
-            const response = await fetch(url)
+            const options = {
+                method: "POST",
+                headers: {"Content-type": "application/json" },
+                body: JSON.stringify({ ChannelId: channelId })
+            };
+            const response = await fetch(url, options)
                 .then(res => res.json())
-
-            response.forEach((msg) => {
-                message = { user: msg.UserName, message: msg.Message };
-                setMessages(msg => [...msg, message])
+           
+            if (response.length) {
+                for (var i = 0; i < response.length; i++) {
+                    let newMessage = { User: response[i].userName, Message: response[i].message };
+                    setMessages(msg => [...msg, newMessage])
+                }
             }
         } catch (err) {
             console.log(err);
@@ -82,6 +90,8 @@ const ChatPage = () => {
 
 
 
+  
+
     const isLoggedIn = () => {
         const userLS = getUserInLS();
         if (userLS) {
@@ -90,7 +100,7 @@ const ChatPage = () => {
                 logOut();
             } else {
                 history.push('/Home');
-                displayMessages(channelId);
+                getMessages(channelId);
             }
         }
     }
@@ -109,7 +119,7 @@ const ChatPage = () => {
 
 
     const postMessage = async (name, id, message, channelId) => {
-        const url = "https://localhost:5001/api/Messages";
+        const url = "https://localhost:5001/api/Messages/PostMessages";
         try {
             const options = {
                 method: "POST",

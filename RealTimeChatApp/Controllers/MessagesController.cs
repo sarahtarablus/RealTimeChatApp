@@ -28,13 +28,13 @@ namespace RealTimeChatApp.Controllers
             _messageHub = messageHub;
         }
 
-
-
-        public async Task<IEnumerable<MessageFromUser>> GetMessages()//(int channelId)
+        
+        [HttpPost("GetMessages")]
+        public async Task<IEnumerable<MessageFromUser>> GetMessages(int channelId)
         {
             List<MessageFromUser> messages = new List<MessageFromUser>();
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "SELECT * FROM public.messages";// WHERE channel_id=@channel_id";
+            var command = "SELECT * FROM public.messages WHERE channel_id=@channel_id";
 
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
@@ -42,7 +42,7 @@ namespace RealTimeChatApp.Controllers
 
             await using (var cmd = new NpgsqlCommand(command, conn))
             {
-                //cmd.Parameters.AddWithValue("channel_id", channelId);
+                cmd.Parameters.AddWithValue("channel_id", channelId);
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
@@ -64,11 +64,10 @@ namespace RealTimeChatApp.Controllers
         }
 
 
-       
 
 
-        [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] Messages message)
+        [HttpPost("PostMessages")]
+        public async Task<IActionResult> PostMessages([FromBody] Messages message)
         {
             string authHeader = this.HttpContext.Request.Headers["Authorization"];
             if (authHeader != null && authHeader.StartsWith("Bearer"))
