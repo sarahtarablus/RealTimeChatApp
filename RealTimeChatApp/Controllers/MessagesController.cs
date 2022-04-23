@@ -12,6 +12,7 @@ using WebSocketSharp;
 using WebSocketSharp.Server;
 using Npgsql;
 using Microsoft.AspNetCore.SignalR;
+using System.Text.Json;
 
 namespace RealTimeChatApp.Controllers
 {
@@ -30,7 +31,7 @@ namespace RealTimeChatApp.Controllers
 
         
         [HttpPost("GetMessages")]
-        public async Task<IEnumerable<MessageFromUser>> GetMessages(int channelId)
+        public async Task<IEnumerable<MessageFromUser>> GetMessages([FromBody]ChannelId channelId)
         {
             List<MessageFromUser> messages = new List<MessageFromUser>();
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
@@ -39,10 +40,15 @@ namespace RealTimeChatApp.Controllers
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
 
+            NpgsqlParameter parameter = new NpgsqlParameter();
+            parameter.ParameterName = "@channel_id";
+            parameter.NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Bigint;
+            parameter.Direction = System.Data.ParameterDirection.Input;
+            parameter.Value = channelId.Id;
 
             await using (var cmd = new NpgsqlCommand(command, conn))
             {
-                cmd.Parameters.AddWithValue("channel_id", channelId);
+                cmd.Parameters.Add(parameter);
                 await using (var reader = await cmd.ExecuteReaderAsync())
                 {
                     while (await reader.ReadAsync())
