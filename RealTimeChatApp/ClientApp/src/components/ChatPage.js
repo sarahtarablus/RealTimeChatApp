@@ -56,17 +56,26 @@ const ChatPage = () => {
 
 
 
+    const getMessage = () => {
+        connection.on("ReceiveMessage", msg => {
+            let newMessage = { User: msg.userName, Message: msg.message };
+            setMessages(msg => [...msg, newMessage]);
+        });
+    }
+
+
     const getMessages = async (channel) => {
-        const url = "https://localhost:5001/api/Messages/GetMessages"; 
+        const url = "https://localhost:5001/api/Messages/GetMessages";
         try {
             const options = {
                 method: "POST",
-                headers: {"Content-type": "application/json" },
-                body: JSON.stringify({ ChannelId: channelId })
+                headers: { "Content-type": "application/json" },
+                body: JSON.stringify({ Id: channel })
             };
+            console.log(channel);
             const response = await fetch(url, options)
                 .then(res => res.json())
-           
+  
             if (response.length) {
                 for (var i = 0; i < response.length; i++) {
                     let newMessage = { User: response[i].userName, Message: response[i].message };
@@ -78,17 +87,6 @@ const ChatPage = () => {
             return err;
         }
     }
-
-
-
-    const getMessage = () => {
-        connection.on("ReceiveMessage", msg => {
-            let newMessage = { User: msg.userName, Message: msg.message };
-            setMessages(msg => [...msg, newMessage]);
-        });
-    }
-
-
 
   
 

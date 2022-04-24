@@ -31,7 +31,7 @@ namespace RealTimeChatApp.Controllers
 
         
         [HttpPost("GetMessages")]
-        public async Task<IEnumerable<MessageFromUser>> GetMessages([FromBody]ChannelId channelId)
+        public async Task<IEnumerable<MessageFromUser>> GetMessages([FromBody] ChannelId channelId)
         {
             List<MessageFromUser> messages = new List<MessageFromUser>();
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
