@@ -4,6 +4,7 @@ import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useHistory } from 'react-router-dom';
 import jwt from "jwt-decode";
 import LoginSignup from './LoginSignup';
+import Messages from './Messages';
 import '../custom.css';
 
 
@@ -48,8 +49,6 @@ const ChatPage = () => {
                 .then(res => {
                     console.log('Connection started');
                     getMessage();
-                   
-
                 });
         }
     }
@@ -170,7 +169,7 @@ const ChatPage = () => {
 
 
 
-
+  
 
 
     return (
@@ -197,15 +196,7 @@ const ChatPage = () => {
                             <p className="userName">{user}</p>
                         </div>
                     </div>
-                    <div className="col-8 bg-light rounded">
-                        {messages.map((message, index) => (
-                            <div className="message bg-light" key={index}>
-                                <p className="msg-user bg-light">{message.User}</p>
-                                <p className="msg-msg bg-light">{message.Message}</p>
-                            </div>
-                        ))}
-
-                    </div>
+                    <Messages messages={messages}></Messages>
                 </div>
                 <div className="input-group">
                     <input type="text" className="form-control" placeholder="Text here" onChange={(e) => setInputText(e.target.value)} />
