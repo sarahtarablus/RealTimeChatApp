@@ -5,6 +5,9 @@ import { useHistory } from 'react-router-dom';
 import jwt from "jwt-decode";
 import LoginSignup from './LoginSignup';
 import Messages from './Messages';
+import Users from './Users';
+import Channels from './Channels';
+import InputGroup from './InputGroup';
 import '../custom.css';
 
 
@@ -180,30 +183,11 @@ const ChatPage = () => {
             </div>
             <div className="container-2 rounded">
                 <div className="row">
-                    <div className="col-2 channel-column rounded">
-                        <p className="title channel-column rounded">CHANNELS</p>
-                        <div className="channels">
-                            <div className="row d-flex flex-column h-100 buttons">
-                                <button className="flex-item channel" type="button" onClick={changeChannel1}>#General</button>
-                                <button className="flex-item channel" type="button" onClick={changeChannel2}>#Sports</button>
-                                <button className="flex-item channel" type="button" onClick={changeChannel3}>#Music</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-2 rounded">
-                        <p className="title rounded">ONLINE</p>
-                        <div className="user">
-                            <p className="userName">{user}</p>
-                        </div>
-                    </div>
+                    <Channels changeChannel1={changeChannel1} changeChannel2={changeChannel2} changeChannel3={changeChannel3}></Channels>
+                    <Users username={user}></Users>
                     <Messages messages={messages}></Messages>
                 </div>
-                <div className="input-group">
-                    <input type="text" className="form-control" placeholder="Text here" onChange={(e) => setInputText(e.target.value)} />
-                    <div className="input-group-append">
-                        <button className="btn" type="button" onClick={sendMessage}>Send</button>
-                    </div>
-                </div>
+                <InputGroup onChange={(e) => setInputText(e.target.value)} onClick={sendMessage}></InputGroup>
             </div>
         </div>
 
