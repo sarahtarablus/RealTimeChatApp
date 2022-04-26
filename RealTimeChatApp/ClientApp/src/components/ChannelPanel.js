@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 
-const Channels = ({ changeChannel1, changeChannel2, changeChannel3 }) => {
+const ChannelPanel = ({ changeChannel1, changeChannel2, changeChannel3 }) => {
 
 
     return (
@@ -17,4 +17,4 @@ const Channels = ({ changeChannel1, changeChannel2, changeChannel3 }) => {
         );
 }
 
-export default Channels;
+export default ChannelPanel;

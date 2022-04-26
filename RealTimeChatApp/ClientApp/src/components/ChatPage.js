@@ -6,7 +6,7 @@ import jwt from "jwt-decode";
 import LoginSignup from './LoginSignup';
 import Messages from './Messages';
 import Users from './Users';
-import Channels from './Channels';
+import ChannelPanel from './ChannelPanel';
 import InputGroup from './InputGroup';
 import Header from './Header';
 import '../custom.css';
@@ -18,6 +18,7 @@ const ChatPage = () => {
     const [token, setToken] = useState("");
     const [channelId, setChannelId] = useState(1);
     const [channelPage, setChannelPage] = useState({});
+    const [channels, setChannels] = useState([{}]);
     const [userId, setUserId] = useState(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([{}]);
@@ -34,7 +35,7 @@ const ChatPage = () => {
     useEffect(() => {
         isLoggedIn();
         const newConnection = new HubConnectionBuilder()
-            .withUrl("/message ")
+            .withUrl("/chat ")
             .withAutomaticReconnect()
             .build();
         setConnection(newConnection);
@@ -54,6 +55,26 @@ const ChatPage = () => {
                     console.log('Connection started');
                     getMessage();
                 });
+        }
+    }
+
+
+    const loadChannels = async() => {
+        const url = "https://localhost:5001/api/Channels";
+        try {
+            const response = await fetch(url)
+                .then(res => res.json())
+                .then(res => console.log(res))
+
+            if (response.length) {
+                response.forEach(c => {
+                    let newChannel = { id: c.id, name: c.name };
+                    setChannels(cha => [...cha, newChannel]);
+                });
+            }
+        } catch (err) {
+            console.log(err);
+            return err;
         }
     }
 
@@ -101,7 +122,8 @@ const ChatPage = () => {
                 logOut();
             } else {
                 history.push('/Home');
-                getMessages(channelId);
+                loadChannels();
+                //getMessages(channelId);
             }
         }
     }

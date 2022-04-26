@@ -4,12 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+using Microsoft.AspNetCore.SignalR;
 
 namespace RealTimeChatApp
 {
     [Route("api/[controller]")]
     public class ChannelsController : Controller
     {
+        private readonly IHubContext<ChatHub> _chatHub;
+
+        public ChannelsController(IHubContext<ChatHub> chatHub) {
+            _chatHub = chatHub;
+        }
+
       
         [HttpGet]
         public async Task<IEnumerable<Channels>> GetAsync()
@@ -37,6 +44,7 @@ namespace RealTimeChatApp
                     }
                 }
             }
+           // await _chatHub.Clients.All.SendAsync("LoadChannels", channels);
             return channels;
         }
 

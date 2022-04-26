@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace RealTimeChatApp
 {
-    public class MessageHub: Hub
+    public class ChatHub: Hub
     {
         public override Task OnConnectedAsync()
         {

@@ -21,12 +21,12 @@ namespace RealTimeChatApp.Controllers
     public class MessagesController : ControllerBase
     {
 
-        private readonly IHubContext<MessageHub> _messageHub;
+        private readonly IHubContext<ChatHub> _chatHub;
 
-        public MessagesController(IHubContext<MessageHub> messageHub)
+        public MessagesController(IHubContext<ChatHub> chatHub)
         {
 
-            _messageHub = messageHub;
+            _chatHub = chatHub;
         }
 
         
@@ -103,7 +103,7 @@ namespace RealTimeChatApp.Controllers
                     msg.UserName = message.UserName;
                     msg.Message = message.Text;
                     msg.ChannelId = message.ChannelId;
-                    await _messageHub.Clients.All.SendAsync("ReceiveMessage", msg);
+                    await _chatHub.Clients.All.SendAsync("ReceiveMessage", msg);
                 }
                 else
                 {
