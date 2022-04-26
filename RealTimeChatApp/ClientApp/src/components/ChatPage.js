@@ -17,7 +17,8 @@ const ChatPage = () => {
     const [users, setUsers] = useState([]);
     const [token, setToken] = useState("");
     const [channelId, setChannelId] = useState(1);
-    const [channelPage, setChannelPage] = useState({});
+   // const [channelPage, setChannelPage] = useState({});
+
     const [channels, setChannels] = useState([{}]);
     const [userId, setUserId] = useState(null);
     const [message, setMessage] = useState("");
@@ -59,18 +60,17 @@ const ChatPage = () => {
     }
 
 
+
     const loadChannels = async() => {
         const url = "https://localhost:5001/api/Channels";
         try {
             const response = await fetch(url)
                 .then(res => res.json())
-                .then(res => console.log(res))
-
             if (response.length) {
-                response.forEach(c => {
-                    let newChannel = { id: c.id, name: c.name };
+                for (var i = 0; i < response.length; i++) {
+                    let newChannel = { id: response[i].id, name: response[i].name };
                     setChannels(cha => [...cha, newChannel]);
-                });
+                }
             }
         } catch (err) {
             console.log(err);
@@ -80,12 +80,22 @@ const ChatPage = () => {
 
 
 
+    //const selectChannel = (id) => {
+    //    if (connection) {
+    //      connection.send("joinChannel", id)
+    //    }     
+    //}  
+
+
+
+
     const getMessage = () => {
         connection.on("ReceiveMessage", msg => {
             let newMessage = { User: msg.userName, Message: msg.message };
             setMessages(msg => [...msg, newMessage]);
         });
     }
+
 
 
     const getMessages = async (channel) => {
@@ -121,7 +131,7 @@ const ChatPage = () => {
             if (decodedJwt.exp * 1000 < Date.now()) {
                 logOut();
             } else {
-                history.push('/Home');
+                history.push('/Home/General');
                 loadChannels();
                 //getMessages(channelId);
             }
@@ -168,21 +178,10 @@ const ChatPage = () => {
     };
 
 
-    const changeChannel1 = () => {
-        setChannelId(1)
-        history.push('/Home')
-    }
-
-
-    const changeChannel2 = () => {
-        setChannelId(2)
-        history.push('/Home/Sports')
-    }
-
-
-    const changeChannel3 = () => {
-        setChannelId(3)
-        history.push('/Home/Music')
+    const changeChannel = (e) => {
+        e.preventDefault();
+        setChannelId(e.target.id)
+        history.push(`/Home/${e.target.name}`);
     }
 
 
@@ -203,7 +202,7 @@ const ChatPage = () => {
             <Header onClick={logOut}></Header>
             <div className="container-2 rounded">
                 <div className="row">
-                    <Channels changeChannel1={changeChannel1} changeChannel2={changeChannel2} changeChannel3={changeChannel3}></Channels>
+                    <ChannelPanel onClick={changeChannel} channelList={channels}></ChannelPanel>
                     <Users username={user}></Users>
                     <Messages messages={messages}></Messages>
                 </div>

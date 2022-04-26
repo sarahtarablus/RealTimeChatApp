@@ -44,7 +44,6 @@ namespace RealTimeChatApp
                     }
                 }
             }
-           // await _chatHub.Clients.All.SendAsync("LoadChannels", channels);
             return channels;
         }
 
