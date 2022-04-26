@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import ChatPage from './ChatPage';
 import Signup from './Signup';
+import FormGroup from './FormGroup';
 import '../custom.css';
 
 const LoginSignup = () => {
@@ -150,37 +151,18 @@ const LoginSignup = () => {
 
 
 
-   return (
-          <div className="container login">
-                    <div className="row">
-                        <div className="col-4">
-                            <form>
-                                <div className="form-group  mx-sm-3 mb-2 mt-5">
-                           <label htmlFor="username">Username</label>
-                           <input type="text" className="form-control" id="usernameInput" placeholder="Enter username" value={inputValue} onChange={(e) => {
-                               setUsername(e.target.value)
-                           }}/>
-                                </div>
-                                <div className="form-group mx-sm-3 mb-2">
-                           <label htmlFor="password">Password</label>
-                           <input type="text" className="form-control" id="passwordInput" placeholder="Password" value={inputValue} onChange={(e) => {
-                               setPassword(e.target.value)
-                           }} /> 
-                           </div>
-                            <button type="submit" className="btn mx-sm-3 mb-2 mt-3" onClick={SubmitLoginRequest}>Login</button>
-                                <p className="or mx-sm-3 mb-1 mt-2">Don't have an account?</p>
-                            <button type="button" className="signup btn mx-sm-1 mb-2 mt-1" onClick={showSignUpWindow}>Signup</button>
-                   </form>
-                   <Signup show={show} signup={signUp} value={inputValue} handleUsername={(e) => {setUsername(e.target.value) }} handlePassword={(e) => {
-                       setPassword(e.target.value)
-                   }}>
-                   </Signup>
-                        </div>
-                        <div className="col-8"></div>
-                    </div>
+    return (
+        <div className="container login">
+            <div className="row">
+                <div className="col-4">
+                    <FormGroup value={inputValue} onChange={(e) => setUsername(e.target.value)} value2={inputValue} onChange2={(e) => setPassword(e.target.value)} onClick={SubmitLoginRequest} onClick2={showSignUpWindow}></FormGroup>
+                    <Signup show={show} signup={signUp} value={inputValue} handleUsername={(e) => setUsername(e.target.value)} handlePassword={(e) => setPassword(e.target.value)}></Signup>
                 </div>
-            )
-        }
+                <div className="col-8"></div>
+            </div>
+        </div>
+    );
+}
            
     
   
