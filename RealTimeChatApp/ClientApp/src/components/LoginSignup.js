@@ -156,7 +156,7 @@ const LoginSignup = () => {
             <div className="row">
                 <div className="col-4">
                     <FormGroup value={inputValue} onChange={(e) => setUsername(e.target.value)} value2={inputValue} onChange2={(e) => setPassword(e.target.value)} onClick={SubmitLoginRequest} onClick2={showSignUpWindow}></FormGroup>
-                    <Signup show={show} signup={signUp} value={inputValue} handleUsername={(e) => setUsername(e.target.value)} handlePassword={(e) => setPassword(e.target.value)}></Signup>
+                    <Signup show={show} signup={signUp} value={inputValue} handleUsername={(e) => setUsername(e.target.value)} handlePassword={(e) => setPassword(e.target.value)} onClick={() => setShow(false)}></Signup>
                 </div>
                 <div className="col-8"></div>
             </div>

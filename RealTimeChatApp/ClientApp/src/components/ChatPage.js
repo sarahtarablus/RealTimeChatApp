@@ -8,6 +8,7 @@ import Messages from './Messages';
 import Users from './Users';
 import Channels from './Channels';
 import InputGroup from './InputGroup';
+import Header from './Header';
 import '../custom.css';
 
 
@@ -177,10 +178,7 @@ const ChatPage = () => {
 
     return (
         <div>
-            <div className="container rounded">
-                <p className="title-1">Let's chat</p>
-                <button className="btn logout" type="button" onClick={logOut}>LOGOUT</button>
-            </div>
+            <Header onClick={logOut}></Header>
             <div className="container-2 rounded">
                 <div className="row">
                     <Channels changeChannel1={changeChannel1} changeChannel2={changeChannel2} changeChannel3={changeChannel3}></Channels>
