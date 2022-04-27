@@ -17,7 +17,7 @@ import SportsPage from './SportsPage';
 
 
 const ChatPage = () => {
-    const [user, setUser] = useState([]);
+    const [user, setUser] = useState("");
     const [users, setUsers] = useState([]);
     const [token, setToken] = useState("");
     const [channelId, setChannelId] = useState(1);
@@ -152,7 +152,8 @@ const ChatPage = () => {
     const getUser = () => {
         if (connection) {
             connection.on("NewLogin", (newUser) => {
-            setUser(newUser);
+                setUser(newUser);
+            setUsers((usr) => [...usr, newUser]);
             })
         }
     }
@@ -230,7 +231,7 @@ const ChatPage = () => {
 
   
     return (
-        <GeneralPage onClick={logOut} changeChannel={changeChannel} channelList={channels} userName={user} messages={messages} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage}></GeneralPage>
+        <GeneralPage onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messages} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage}></GeneralPage>
     );
 
 }

@@ -1,11 +1,14 @@
 ﻿import React from 'react';
 
-const Users = ({ username }) => {
+const Users = ({ users }) => {
     return (
         <div className="col-2 rounded">
             <p className="title rounded">ONLINE</p>
             <div className="user">
-                <p className="userName">{username}</p>
+                {users.map((user) => {
+                    <p className="userName" key={user}>{user}</p>
+                })}
+              
             </div>
         </div>
    );
