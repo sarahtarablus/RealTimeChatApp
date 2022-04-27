@@ -17,7 +17,7 @@ const LoginSignup = () => {
 
     useEffect(() => {
         let user = getUser();
-        user ? history.push('/Home') : history.push('/');      
+        user ? history.push('/Home/general') : history.push('/');      
     }, []);
 
 
@@ -37,7 +37,7 @@ const LoginSignup = () => {
 
 
     const loginRequest = async (name, password) => {
-        const url = "https://localhost:5001/api/Login";
+        const url = "https://localhost:5001/api/Login/PostUser";
         try {
             const options = {
                 method: "POST",
@@ -79,7 +79,7 @@ const LoginSignup = () => {
 
     const setUserInLS = (id, name, token) => {
         localStorage.setItem("user", JSON.stringify({ id: id, name: name, token: token }));
-        history.replace('/Home');
+        history.replace('/Home/general');
     };
 
 

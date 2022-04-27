@@ -18,7 +18,16 @@ namespace RealTimeChatApp
     public class LoginController : ControllerBase
     {
 
-        [HttpPost]
+        private readonly IHubContext<ChatHub> _chatHub;
+
+        public LoginController(IHubContext<ChatHub> chatHub)
+        {
+
+            _chatHub = chatHub;
+        }
+
+
+        [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser([FromBody] LoginUser user)
         {           
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
@@ -83,6 +92,17 @@ namespace RealTimeChatApp
             }
             else return Ok(loggedUser);
            
+        }
+
+
+
+
+        [HttpPost("GetUser")]
+        public async Task<IActionResult> GetUser([FromBody] NewLoginUser user)
+        {
+            var newUser = user.Name;
+            await _chatHub.Clients.All.SendAsync("NewLogin", newUser);
+            return Ok("User Received");
         }
 
 
