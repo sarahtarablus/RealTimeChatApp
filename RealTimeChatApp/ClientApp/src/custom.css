@@ -34,10 +34,13 @@
     margin-top: 6px;
     width: 70%;
 }
+
 .row {
     height: 400px;
     width: 800px;
     margin: auto;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 .col-2 {
@@ -100,6 +103,7 @@ label {
 
 .col-8 {
     padding: 13px;
+  
 }
 
 .msg-user {

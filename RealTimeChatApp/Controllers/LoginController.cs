@@ -100,9 +100,13 @@ namespace RealTimeChatApp
         [HttpPost("GetUser")]
         public async Task<IActionResult> GetUser([FromBody] NewLoginUser user)
         {
-            var newUser = user.Name;
+            var newUser = new NewLoginUser()
+            {
+                Name = user.Name,
+                Id = user.Id
+            };
             await _chatHub.Clients.All.SendAsync("NewLogin", newUser);
-            return Ok("User Received");
+            return Ok(newUser);
         }
 
 

@@ -5,9 +5,9 @@ const Users = ({ users }) => {
         <div className="col-2 rounded">
             <p className="title rounded">ONLINE</p>
             <div className="user">
-                {users.map((user) => {
-                    <p className="userName" key={user}>{user}</p>
-                })}
+                {users.map((user, index) => (
+                    <p className="userName" key={index}>{user.name}</p>
+                ))}
               
             </div>
         </div>

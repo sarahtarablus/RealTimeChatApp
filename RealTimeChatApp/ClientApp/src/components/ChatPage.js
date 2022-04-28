@@ -18,7 +18,7 @@ import SportsPage from './SportsPage';
 
 const ChatPage = () => {
     const [user, setUser] = useState("");
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([{}]);
     const [token, setToken] = useState("");
     const [channelId, setChannelId] = useState(1);
    // const [channelPage, setChannelPage] = useState({});
@@ -59,10 +59,10 @@ const ChatPage = () => {
                 .then(res => {
                     console.log('Connection started');
                     loadChannels();
-                    sendUser();
+                    sendUsers();
                     requestMessages(channelId);
                     getMessage();
-                    getUser();
+                    getUsers();
                     getMessages();
                 });
         }
@@ -72,6 +72,7 @@ const ChatPage = () => {
 
     const getUserInLS = () => {
         const userLS = JSON.parse(localStorage.getItem("user"));
+        setUser(userLS.name);
         setUserId(userLS.id);
         setToken(userLS.token);
         return userLS.token;
@@ -129,19 +130,17 @@ const ChatPage = () => {
                 }
             }
         } catch (err) {
-            console.log(err);
             return err;
         }
     }
 
 
 
-    const sendUser = async () => {
+    const sendUsers = async () => {
         if (userId) {
             try {
                 const url = "https://localhost:5001/api/Login/GetUser";
-                const userLS = JSON.parse(localStorage.getItem("user"));
-                let newUser = { Name: userLS.name };
+                let newUser = { Name: user, Id: userId };
                 postMethod(url, newUser, { "Content-type": "application/json" })
             } catch (err) { return err; }
         }
@@ -149,14 +148,19 @@ const ChatPage = () => {
 
 
 
-    const getUser = () => {
+    const getUsers = () => {
         if (connection) {
             connection.on("NewLogin", (newUser) => {
-                setUser(newUser);
-            setUsers((usr) => [...usr, newUser]);
-            })
+                users.some(usr => {
+                    if (usr.id === newUser.id) {
+                        return false;
+                    } else {
+                        setUsers(users => [...users, newUser]);
+                    }
+                });
+            });
         }
-    }
+    };
 
 
 
