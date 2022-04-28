@@ -6,7 +6,7 @@ import ChannelPanel from './ChannelPanel';
 import InputGroup from './InputGroup';
 
 
-const GeneralPage = ({ onClick, changeChannel, channelList, users, messages, onChange, sendMessage }) => {
+const Page = ({ onClick, changeChannel, channelList, users, messages, onChange, sendMessage }) => {
 
     return (
         <div>
@@ -23,6 +23,6 @@ const GeneralPage = ({ onClick, changeChannel, channelList, users, messages, onC
     );
 }
 
-export default GeneralPage;
+export default Page;
 
 

@@ -5,13 +5,7 @@ import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useHistory } from 'react-router-dom';
 import jwt from "jwt-decode";
 import LoginSignup from './LoginSignup';
-import GeneralPage from './GeneralPage';
-import SportsPage from './SportsPage';
-//import Messages from './Messages';
-//import Users from './Users';
-//import ChannelPanel from './ChannelPanel';
-//import InputGroup from './InputGroup';
-//import Header from './Header';
+import Page from './Page';
 
 
 
@@ -235,7 +229,7 @@ const ChatPage = () => {
 
   
     return (
-        <GeneralPage onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messages} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage}></GeneralPage>
+        <Page onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messages} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage}></Page>
     );
 
 }
