@@ -15,7 +15,6 @@ const ChatPage = () => {
     const [users, setUsers] = useState([{}]);
     const [token, setToken] = useState("");
     const [channelId, setChannelId] = useState(1);
-    const [messageId, setMessageId] = useState("");
     const [channels, setChannels] = useState([{}]);
     const [userId, setUserId] = useState(null);
     const [message, setMessage] = useState("");
@@ -34,7 +33,6 @@ const ChatPage = () => {
 
     useEffect(() => {
         isLoggedIn();
-        getMessageIdCount();
         const newConnection = new HubConnectionBuilder()
             .withUrl("/chat ")
             .withAutomaticReconnect()
@@ -49,9 +47,9 @@ const ChatPage = () => {
 
 
     useEffect(() => {
-        requestMessages(channelId);
+        requestMessages(channelId)
         getMessages();
-    }, [urlLocation])
+    }, [urlLocation, connection])
 
 
 
@@ -147,7 +145,6 @@ const ChatPage = () => {
 
 
     const getUsers = () => {
-        if (connection) {
             connection.on("NewLogin", (newUser) => {
                 users.some(usr => {
                     if (usr.id === newUser.id) {
@@ -157,7 +154,6 @@ const ChatPage = () => {
                     }
                 });
             });
-        }
     };
 
 
@@ -165,8 +161,12 @@ const ChatPage = () => {
     const getMessageIdCount = async () => {
         const url = "https://localhost:5001/api/Messages";
         try {
-            const response = getMethod(url);
-            response.length ? setMessageId(res[0] + 1) : setMessageId(1);
+            let id;
+            const response = await getMethod(url);
+            if (response.length) {
+                id = response[0] + 1
+            } else id = 1
+            return id;
         } catch (err) {
             return err;
         }
@@ -175,9 +175,10 @@ const ChatPage = () => {
 
 
     const sendMessage = async () => {
+        let id = await getMessageIdCount();
         if (inputText !== "") {
             try {
-                postMethod("https://localhost:5001/api/Messages/PostMessages", { UserName: user, UserId: userId, Text: inputText, ChannelId: channelId, Id: messageId }, { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" });
+                postMethod("https://localhost:5001/api/Messages/PostMessages", { UserName: user, UserId: userId, Text: inputText, ChannelId: channelId, Id: id }, { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" });
             } catch (err) { return err; }
         } else {
             return false;
@@ -188,8 +189,20 @@ const ChatPage = () => {
 
     const getMessage = () => {
         connection.on("ReceiveMessage", msg => {
-            let newMessage = { User: msg.userName, Message: msg.message };
-            setMessages(msg => [...msg, newMessage]);
+            let newMessage = { User: msg.userName, Message: msg.message, channelId: msg.channelId, id: msg.id };
+            console.log(newMessage);
+            //switch (newMessage.channelId) {
+            //    case 1:
+            //        setMessages(msg => [...msg, newMessage]);
+            //        break;
+            //    case 2:
+            //        setMessages2(msg => [...msg, newMessage]);
+            //        break;
+            //    case 3:
+            //        setMessages3(msg => [...msg, newMessage]);
+            //        break;
+            //}
+
         });
     }
 
@@ -208,19 +221,22 @@ const ChatPage = () => {
         if (connection) {
             connection.on("DisplayMessages", (msg) => {
                 for (let i = 0; i < msg.length; i++) {
-                    let newMessage = { User: msg[i].userName, Message: msg[i].message, Id: msg[i].channelId };
-                    switch (newMessage.Id) {
+                    let newMessage = { User: msg[i].userName, Message: msg[i].message, ChannelId: msg[i].channelId, Id: msg[i].id };
+                    console.log(newMessage);
+                    switch (newMessage.ChannelId) {
                         case 1:
-                            setMessages(msg => [...msg, newMessage]);
-                            console.log(messages);
+                            setMessages(messages => [...messages, newMessage]);
+                          
                             break;
                         case 2:
-                            setMessages2(msg => [...msg, newMessage]);
-                            console.log(messages2);
+                      
+                                    setMessages2(messages => [...messages, newMessage]);
+                          
                             break;
                         case 3:
-                            setMessages3(msg => [...msg, newMessage]);
-                            console.log(messages3);
+             
+                                    setMessages3(messages => [...messages, newMessage]);
+                          
                             break;
                     }
                     

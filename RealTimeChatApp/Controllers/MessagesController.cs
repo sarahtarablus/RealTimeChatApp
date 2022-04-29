@@ -138,6 +138,7 @@ namespace RealTimeChatApp.Controllers
                     msg.UserName = message.UserName;
                     msg.Message = message.Text;
                     msg.ChannelId = message.ChannelId;
+                    msg.Id = message.Id;
                     await _chatHub.Clients.All.SendAsync("ReceiveMessage", msg);
                 }
                 else

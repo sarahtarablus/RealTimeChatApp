@@ -2,9 +2,9 @@
 import Channel from './Channel';
 
 const ChannelPanel = ({ onClick, channelList }) => {
-    let list;
+    let list = <div></div>
     if (channelList) {
-        list = channelList.map(c => <Channel onClick={onClick} id={c.id} title={c.name} name={c.name}></Channel>);
+        list = channelList.map((c, index) => <Channel onClick={onClick} id={c.id} title={c.name} name={c.name} key={index}></Channel>);
     }
 
     return (
