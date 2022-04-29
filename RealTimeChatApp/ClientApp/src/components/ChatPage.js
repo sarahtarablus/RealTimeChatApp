@@ -15,16 +15,17 @@ const ChatPage = () => {
     const [users, setUsers] = useState([{}]);
     const [token, setToken] = useState("");
     const [channelId, setChannelId] = useState(1);
-   // const [channelPage, setChannelPage] = useState({});
-
+    const [messageId, setMessageId] = useState("");
     const [channels, setChannels] = useState([{}]);
     const [userId, setUserId] = useState(null);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([{}]);
+    const [messages2, setMessages2] = useState([{}]);
+    const [messages3, setMessages3] = useState([{}]);
     const [inputText, setInputText] = useState("");
     const [connection, setConnection] = useState(null);
 
-
+    const urlLocation = window.location.pathname.split('/').pop();
 
     let history = useHistory();
 
@@ -33,6 +34,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         isLoggedIn();
+        getMessageIdCount();
         const newConnection = new HubConnectionBuilder()
             .withUrl("/chat ")
             .withAutomaticReconnect()
@@ -46,18 +48,21 @@ const ChatPage = () => {
     }, [connection]);
 
 
+    useEffect(() => {
+        requestMessages(channelId);
+        getMessages();
+    }, [urlLocation])
+
+
 
     const startConnection = () => {
         if (connection) {
             connection.start()
                 .then(res => {
-                    console.log('Connection started');
                     loadChannels();
-                    sendUsers();
-                    requestMessages(channelId);
+                    sendUsers();                 
                     getMessage();
                     getUsers();
-                    getMessages();
                 });
         }
     }
@@ -81,8 +86,7 @@ const ChatPage = () => {
             if (decodedJwt.exp * 1000 < Date.now()) {
                 logOut();
             } else {
-                history.push('/Home/General');
-
+                history.push('/Home/general');
             }
         }
     }
@@ -158,12 +162,23 @@ const ChatPage = () => {
 
 
 
+    const getMessageIdCount = async () => {
+        const url = "https://localhost:5001/api/Messages";
+        try {
+            const response = getMethod(url);
+            response.length ? setMessageId(res[0] + 1) : setMessageId(1);
+        } catch (err) {
+            return err;
+        }
+    };
+
+
+
     const sendMessage = async () => {
         if (inputText !== "") {
             try {
-                postMethod("https://localhost:5001/api/Messages/PostMessages", { UserName: user, UserId: userId, Text: inputText, ChannelId: channelId }, { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" });
+                postMethod("https://localhost:5001/api/Messages/PostMessages", { UserName: user, UserId: userId, Text: inputText, ChannelId: channelId, Id: messageId }, { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" });
             } catch (err) { return err; }
-
         } else {
             return false;
         }
@@ -193,30 +208,35 @@ const ChatPage = () => {
         if (connection) {
             connection.on("DisplayMessages", (msg) => {
                 for (let i = 0; i < msg.length; i++) {
-                   let newMessage = { User: msg[i].userName, Message: msg[i].message };
-                   setMessages(msg => [...msg, newMessage]);
-                }
-            });
+                    let newMessage = { User: msg[i].userName, Message: msg[i].message, Id: msg[i].channelId };
+                    switch (newMessage.Id) {
+                        case 1:
+                            setMessages(msg => [...msg, newMessage]);
+                            console.log(messages);
+                            break;
+                        case 2:
+                            setMessages2(msg => [...msg, newMessage]);
+                            console.log(messages2);
+                            break;
+                        case 3:
+                            setMessages3(msg => [...msg, newMessage]);
+                            console.log(messages3);
+                            break;
+                    }
+                    
+                }                       
+            })
         }
     }
 
 
 
-
     const changeChannel = (e) => {
         e.preventDefault();
-        setChannelId(e.target.id);
+        setChannelId(JSON.parse(e.target.id));       
         history.push(`/Home/${e.target.name}`);
     }
 
-
-
-
-    //const selectChannel = (id) => {
-    //    if (connection) {
-    //      connection.send("joinChannel", id)
-    //    }     
-    //}
 
 
     const logOut = () => {
@@ -225,12 +245,22 @@ const ChatPage = () => {
     };
 
 
+    let messagesList;
+    if (channelId === 1) {
+        messagesList = messages;
+    } else if (channelId === 2) {
+        messagesList = messages2;
+    } else if (channelId === 3) {
+        messagesList = messages3;
+    }
 
-
-  
+   
     return (
-        <Page onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messages} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage}></Page>
-    );
+ 
+            <Page onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messagesList} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage}></Page>
+        );
+ 
+
 
 }
 

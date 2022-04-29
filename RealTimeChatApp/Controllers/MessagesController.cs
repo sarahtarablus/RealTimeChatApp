@@ -29,7 +29,39 @@ namespace RealTimeChatApp.Controllers
             _chatHub = chatHub;
         }
 
-        
+
+
+        [HttpGet]
+        public async Task<IEnumerable<int>> GetLastRow()
+        {
+            List<int> messagesCount = new List<int>();
+            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
+            var command = "SELECT * FROM public.messages ORDER BY id DESC LIMIT 1";
+
+            await using var conn = new NpgsqlConnection(connectionString);
+            await conn.OpenAsync();
+
+
+            await using (var cmd = new NpgsqlCommand(command, conn))
+            {
+                await using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var messagesId = reader.GetInt32(5);
+                        messagesCount.Add(messagesId);
+
+                    }
+
+                }
+
+            }
+            return messagesCount;
+        }
+
+
+
+
         [HttpPost("GetMessages")]
         public async Task<IActionResult> GetMessages([FromBody] ChannelId channelId)
         {
@@ -57,7 +89,8 @@ namespace RealTimeChatApp.Controllers
                         {
                             UserName = reader.GetString(4),
                             Message = reader.GetString(1),
-                            ChannelId = reader.GetInt32(3)
+                            ChannelId = reader.GetInt32(3),
+                            Id = reader.GetInt32(5)
                         };
 
                         messages.Add(message);
@@ -67,7 +100,7 @@ namespace RealTimeChatApp.Controllers
 
             }
             await _chatHub.Clients.All.SendAsync("DisplayMessages", messages);
-            return Ok("messages displayed");
+            return Ok(messages);
         }
 
 
@@ -85,7 +118,7 @@ namespace RealTimeChatApp.Controllers
                 if(username == message.UserName)
                 {
                     var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-                    var command = $"INSERT INTO public.messages (user_id, text, created_date, channel_id, user_name) VALUES (@user_id, @text, @created_date, @channel_id, @user_name);";
+                    var command = $"INSERT INTO public.messages (user_id, text, created_date, channel_id, user_name, id) VALUES (@user_id, @text, @created_date, @channel_id, @user_name, @id);";
                     DateTime date = DateTime.Now;
 
                     await using var conn = new NpgsqlConnection(connectionString);
@@ -98,6 +131,7 @@ namespace RealTimeChatApp.Controllers
                         cmd.Parameters.AddWithValue("created_date", date);
                         cmd.Parameters.AddWithValue("channel_id", message.ChannelId);
                         cmd.Parameters.AddWithValue("user_name", message.UserName);
+                        cmd.Parameters.AddWithValue("id", message.Id);
                         await cmd.ExecuteNonQueryAsync();
                     }
                     var msg = new MessageFromUser();

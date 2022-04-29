@@ -12,6 +12,7 @@ namespace RealTimeChatApp
         public virtual int UserId { get; set; }
         public virtual string Text { get; set; }
         public virtual int ChannelId { get; set; }
+        public virtual int Id { get; set; }
 
 
 

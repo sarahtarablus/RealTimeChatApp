@@ -7,6 +7,8 @@ import InputGroup from './InputGroup';
 
 
 const Page = ({ onClick, changeChannel, channelList, users, messages, onChange, sendMessage }) => {
+  
+
 
     return (
         <div>
@@ -14,8 +16,8 @@ const Page = ({ onClick, changeChannel, channelList, users, messages, onChange, 
             <div className="container-2 rounded">
                 <div className="row">
                     <ChannelPanel onClick={changeChannel} channelList={channelList}></ChannelPanel>
-                    <Users users={users}></Users>
-                    <Messages messages={messages}></Messages>
+                    <Users users={users}></Users>             
+                    <Messages messages={messages}></Messages>                                    
                 </div>
                 <InputGroup onChange={onChange} onClick={sendMessage}></InputGroup>
             </div>
