@@ -22,6 +22,7 @@ const ChatPage = () => {
     const [messages2, setMessages2] = useState([{}]);
     const [messages3, setMessages3] = useState([{}]);
     const [inputText, setInputText] = useState("");
+    const [value, setValue] = useState("");
     const [connection, setConnection] = useState(null);
 
     const urlLocation = window.location.pathname.split('/').pop();
@@ -179,6 +180,7 @@ const ChatPage = () => {
         if (inputText !== "") {
             try {
                 postMethod("https://localhost:5001/api/Messages/PostMessages", { UserName: user, UserId: userId, Text: inputText, ChannelId: channelId, Id: id }, { "Authorization": `Bearer ${JSON.stringify(token)}`, "Content-type": "application/json" });
+                setInputText("");
             } catch (err) { return err; }
         } else {
             return false;
@@ -190,18 +192,17 @@ const ChatPage = () => {
     const getMessage = () => {
         connection.on("ReceiveMessage", msg => {
             let newMessage = { User: msg.userName, Message: msg.message, channelId: msg.channelId, id: msg.id };
-            console.log(newMessage);
-            //switch (newMessage.channelId) {
-            //    case 1:
-            //        setMessages(msg => [...msg, newMessage]);
-            //        break;
-            //    case 2:
-            //        setMessages2(msg => [...msg, newMessage]);
-            //        break;
-            //    case 3:
-            //        setMessages3(msg => [...msg, newMessage]);
-            //        break;
-            //}
+            switch (newMessage.channelId) {
+                case 1:
+                    setMessages(msg => [...msg, newMessage]);
+                    break;
+                case 2:
+                    setMessages2(msg => [...msg, newMessage]);
+                    break;
+                case 3:
+                    setMessages3(msg => [...msg, newMessage]);
+                    break;
+            }
 
         });
     }
@@ -222,19 +223,30 @@ const ChatPage = () => {
             connection.on("DisplayMessages", (msg) => {
                 for (let i = 0; i < msg.length; i++) {
                     let newMessage = { User: msg[i].userName, Message: msg[i].message, ChannelId: msg[i].channelId, Id: msg[i].id };
-                    console.log(newMessage);
+                    //console.log(newMessage);
+
                     switch (newMessage.ChannelId) {
                         case 1:
+                            if (messages.length) {
+                                console.log(messages.length)
+                                return;
+                            }
                             setMessages(messages => [...messages, newMessage]);
                           
                             break;
                         case 2:
-                      
+                            if (messages2.length) {
+                                console.log(messages2)
+                                return;
+                            }
                                     setMessages2(messages => [...messages, newMessage]);
                           
                             break;
                         case 3:
-             
+                            if (messages3.length) {
+                                console.log(messages3)
+                                return;
+                            }
                                     setMessages3(messages => [...messages, newMessage]);
                           
                             break;
@@ -273,7 +285,7 @@ const ChatPage = () => {
    
     return (
  
-            <Page onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messagesList} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage}></Page>
+        <Page onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messagesList} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage} value={inputText}></Page>
         );
  
 
