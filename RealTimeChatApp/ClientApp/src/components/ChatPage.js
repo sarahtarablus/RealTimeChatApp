@@ -3,7 +3,7 @@ import '../custom.css';
 import React, { useState, useEffect } from 'react';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { useHistory } from 'react-router-dom';
-import jwt from "jwt-decode";
+import jwt from 'jwt-decode';
 import LoginSignup from './LoginSignup';
 import Page from './Page';
 
@@ -25,7 +25,7 @@ const ChatPage = () => {
     const [value, setValue] = useState("");
     const [connection, setConnection] = useState(null);
 
-    const urlLocation = window.location.pathname.split('/').pop();
+    //const urlLocation = window.location.pathname.split("/").pop();
 
     let history = useHistory();
 
@@ -35,22 +35,19 @@ const ChatPage = () => {
     useEffect(() => {
         isLoggedIn();
         const newConnection = new HubConnectionBuilder()
-            .withUrl("/chat ")
+            .withUrl("/chat")
             .withAutomaticReconnect()
             .build();
         setConnection(newConnection);
     }, []);
 
 
+
     useEffect(() => {
         startConnection();
-    }, [connection]);
-
-
-    useEffect(() => {
         requestMessages(channelId)
         getMessages();
-    }, [urlLocation, connection])
+    }, [connection]);
 
 
 
@@ -85,7 +82,7 @@ const ChatPage = () => {
             if (decodedJwt.exp * 1000 < Date.now()) {
                 logOut();
             } else {
-                history.push('/Home/general');
+                history.push("/Home/general");
             }
         }
     }
@@ -221,34 +218,20 @@ const ChatPage = () => {
     const getMessages = () => {
         if (connection) {
             connection.on("DisplayMessages", (msg) => {
+                setMessages([{}]);
+                setMessages2([{}]);
+                setMessages3([{}]);
                 for (let i = 0; i < msg.length; i++) {
                     let newMessage = { User: msg[i].userName, Message: msg[i].message, ChannelId: msg[i].channelId, Id: msg[i].id };
-                    //console.log(newMessage);
-
                     switch (newMessage.ChannelId) {
-                        case 1:
-                            if (messages.length) {
-                                console.log(messages.length)
-                                return;
-                            }
-                            setMessages(messages => [...messages, newMessage]);
-                          
+                        case 1:                      
+                            setMessages(messages => [...messages, newMessage]);              
                             break;
-                        case 2:
-                            if (messages2.length) {
-                                console.log(messages2)
-                                return;
-                            }
-                                    setMessages2(messages => [...messages, newMessage]);
-                          
+                        case 2:                     
+                            setMessages2(messages => [...messages, newMessage]);                       
                             break;
-                        case 3:
-                            if (messages3.length) {
-                                console.log(messages3)
-                                return;
-                            }
-                                    setMessages3(messages => [...messages, newMessage]);
-                          
+                        case 3:                    
+                           setMessages3(messages => [...messages, newMessage]);                
                             break;
                     }
                     
@@ -261,8 +244,11 @@ const ChatPage = () => {
 
     const changeChannel = (e) => {
         e.preventDefault();
-        setChannelId(JSON.parse(e.target.id));       
+        let newChannel = JSON.parse(e.target.id)
+        setChannelId(newChannel);       
         history.push(`/Home/${e.target.name}`);
+        requestMessages(newChannel);
+        getMessages();
     }
 
 
