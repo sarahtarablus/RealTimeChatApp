@@ -67,7 +67,7 @@ namespace RealTimeChatApp.Controllers
         {
             List<MessageFromUser> messages = new List<MessageFromUser>();
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "SELECT * FROM public.messages WHERE channel_id=@channel_id";
+            var command = "SELECT * FROM public.messages WHERE channel_id=@channel_id ORDER BY id";
 
             await using var conn = new NpgsqlConnection(connectionString);
             await conn.OpenAsync();
