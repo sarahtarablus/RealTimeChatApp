@@ -15,6 +15,7 @@ namespace RealTimeChatApp
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            var secret = configuration["SECRET"];
         }
 
         public IConfiguration Configuration { get; }
@@ -76,7 +77,6 @@ namespace RealTimeChatApp
                 endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllerRoute(
                     name: "default",
-                    //pattern: "{controller}/{action=Index}/{id?}");
                     pattern: "{controller}/{action}/{id?}");
         });
 

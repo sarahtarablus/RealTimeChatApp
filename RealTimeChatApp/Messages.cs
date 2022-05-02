@@ -5,7 +5,7 @@ using Npgsql;
 
 namespace RealTimeChatApp
 {
-    public class Messages
+    public class Messages: IEntity
     {
 
         public virtual string UserName { get; set; }

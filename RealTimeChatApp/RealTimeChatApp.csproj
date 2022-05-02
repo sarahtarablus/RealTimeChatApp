@@ -23,6 +23,7 @@
     <PackageReference Include="WebSocketSharp-NonPreRelease" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.2.1" />
+    <PackageReference Include="DotNetEnv" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +50,7 @@
     <None Remove="WebSocketSharp-NonPreRelease" />
     <None Remove="Microsoft.AspNetCore.SignalR" />
     <None Remove="Microsoft.Owin.Host.SystemWeb" />
+    <None Remove="DotNetEnv" />
   </ItemGroup>
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

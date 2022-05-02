@@ -200,7 +200,6 @@ const ChatPage = () => {
                     setMessages3(msg => [...msg, newMessage]);
                     break;
             }
-
         });
     }
 
