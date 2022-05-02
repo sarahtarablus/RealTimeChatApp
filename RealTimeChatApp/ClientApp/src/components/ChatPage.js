@@ -25,7 +25,7 @@ const ChatPage = () => {
     const [value, setValue] = useState("");
     const [connection, setConnection] = useState(null);
 
-    //const urlLocation = window.location.pathname.split("/").pop();
+    
 
     let history = useHistory();
 
@@ -45,8 +45,6 @@ const ChatPage = () => {
 
     useEffect(() => {
         startConnection();
-        requestMessages(channelId)
-        getMessages();
     }, [connection]);
 
 
@@ -56,9 +54,11 @@ const ChatPage = () => {
             connection.start()
                 .then(res => {
                     loadChannels();
-                    sendUsers();                 
-                    getMessage();
+                    sendUsers();
                     getUsers();
+                    requestMessages(channelId)
+                    getMessages();
+                    getMessage();                   
                 });
         }
     }
