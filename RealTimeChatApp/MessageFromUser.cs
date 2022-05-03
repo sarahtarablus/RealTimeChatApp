@@ -7,5 +7,6 @@ namespace RealTimeChatApp
       public string Message { get; set; }
       public int ChannelId { get; set; }
       public int Id { get; set; }
+      public DateTime Date { get; set; }
     }
 }

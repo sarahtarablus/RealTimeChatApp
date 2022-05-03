@@ -90,7 +90,8 @@ namespace RealTimeChatApp.Controllers
                             UserName = reader.GetString(4),
                             Message = reader.GetString(1),
                             ChannelId = reader.GetInt32(3),
-                            Id = reader.GetInt32(5)
+                            Id = reader.GetInt32(5),
+                            Date = reader.GetDateTime(2)
                         };
 
                         messages.Add(message);
@@ -115,8 +116,10 @@ namespace RealTimeChatApp.Controllers
                 string encodedToken = authHeader.Substring("Bearer".Length).Trim();
                 string encodedUsername = encodedToken.Substring(1, encodedToken.Length - 2);               
                 var username = TokenManager.ValidateToken(encodedUsername);
-                if(username == message.UserName)
+                if (username == message.UserName)
                 {
+                    //var messageInstance = new Messages();
+                    //var newMessage = await messageInstance.SendMessage(message);
                     var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
                     var command = $"INSERT INTO public.messages (user_id, text, created_date, channel_id, user_name, id) VALUES (@user_id, @text, @created_date, @channel_id, @user_name, @id);";
                     DateTime date = DateTime.Now;
@@ -134,11 +137,14 @@ namespace RealTimeChatApp.Controllers
                         cmd.Parameters.AddWithValue("id", message.Id);
                         await cmd.ExecuteNonQueryAsync();
                     }
+                 
                     var msg = new MessageFromUser();
-                    msg.UserName = message.UserName;
-                    msg.Message = message.Text;
+                    msg.UserName = message.UserName;                   
+                    msg.Message = message.Text;                               
                     msg.ChannelId = message.ChannelId;
                     msg.Id = message.Id;
+                    msg.Date = date;
+
                     await _chatHub.Clients.All.SendAsync("ReceiveMessage", msg);
                 }
                 else

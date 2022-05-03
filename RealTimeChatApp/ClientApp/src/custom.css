@@ -118,6 +118,13 @@ label {
     padding-right: 25px;
 }
 
+
+.msg-date {
+    padding-right: 25px;
+    font-size: 10px;
+    color: grey;
+}
+
 .container-3 {
     margin: auto;
     margin-top: 70px;

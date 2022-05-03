@@ -106,8 +106,7 @@ const ChatPage = () => {
             headers: headers,
             body: JSON.stringify(body)
         };
-        const response = await fetch(url, options)
-            .then(res => res.json())
+        const response = await fetch(url, options);
         return response;
     }
 
@@ -188,7 +187,8 @@ const ChatPage = () => {
 
     const getMessage = () => {
         connection.on("ReceiveMessage", msg => {
-            let newMessage = { User: msg.userName, Message: msg.message, channelId: msg.channelId, id: msg.id };
+            let date = msg.date.toString().split('T');
+            let newMessage = { User: msg.userName, Message: msg.message, channelId: msg.channelId, id: msg.id, Date: date[0] };
             switch (newMessage.channelId) {
                 case 1:
                     setMessages(msg => [...msg, newMessage]);
@@ -221,7 +221,8 @@ const ChatPage = () => {
                 setMessages2([{}]);
                 setMessages3([{}]);
                 for (let i = 0; i < msg.length; i++) {
-                    let newMessage = { User: msg[i].userName, Message: msg[i].message, ChannelId: msg[i].channelId, Id: msg[i].id };
+                    let date = msg[i].date.toString().split('T')
+                    let newMessage = { User: msg[i].userName, Message: msg[i].message, ChannelId: msg[i].channelId, Id: msg[i].id, Date: date[0]};
                     switch (newMessage.ChannelId) {
                         case 1:                      
                             setMessages(messages => [...messages, newMessage]);              
