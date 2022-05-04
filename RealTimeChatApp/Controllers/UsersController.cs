@@ -4,6 +4,7 @@ using System.Data;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Npgsql;
 
 namespace RealTimeChatApp.Controllers
@@ -13,60 +14,61 @@ namespace RealTimeChatApp.Controllers
     public class UsersController : ControllerBase
     {
 
+        private readonly IHubContext<ChatHub> _chatHub;
+
+        public UsersController(IHubContext<ChatHub> chatHub)
+        {
+
+            _chatHub = chatHub;
+        }
 
         [HttpGet]
         public async Task<IEnumerable<int>> GetLastRow()
         {
-            List<int> usersCount = new List<int>();
-            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "SELECT * FROM public.users ORDER BY id DESC LIMIT 1";
-          
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-
-
-            await using (var cmd = new NpgsqlCommand(command, conn))
-            {
-                await using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        var userId = reader.GetInt32(0);
-                        usersCount.Add(userId);
-
-                    }
-
-                }
-
-            }
+            var user = new User();
+            var usersCount = await user.GetLastRow();
             return usersCount;
         }
 
 
 
 
+        [HttpPost("CheckUser")]
+        public async Task<IActionResult> CheckUser([FromBody] LoginUser user)
+        {
+            var userInstance = new User();
+            var loggedUser = await userInstance.FindUser(user);
+            if (loggedUser == null)
+            {
+                return Ok("User not found");
+            }
+            else return Ok(loggedUser);
+
+        }
 
 
-        [HttpPost]
+
+
+        [HttpPost("GetUser")]
+        public async Task<IActionResult> GetUser([FromBody] NewLoginUser user)
+        {
+            var userInstance = new User();
+            var newUser = userInstance.GetUser(user);
+            await _chatHub.Clients.All.SendAsync("NewLogin", newUser);
+            return Ok(newUser);
+        }
+
+
+
+
+
+        [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser([FromBody] User user)
         {
             var passwordHasher = new PasswordHasher<string>();
             var hash = passwordHasher.HashPassword(user.Name, user.Password);
-            var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";
-            var command = "INSERT INTO public.users (id, name, password) VALUES (@id, @name, @password);";
-
-            await using var conn = new NpgsqlConnection(connectionString);
-            await conn.OpenAsync();
-
-
-            await using (var cmd = new NpgsqlCommand(command, conn))
-            {
-                cmd.Parameters.AddWithValue("@id", user.Id);
-                cmd.Parameters.AddWithValue("@name", user.Name);
-                cmd.Parameters.AddWithValue("@password", hash);
-
-                await cmd.ExecuteNonQueryAsync();
-            }
+            var userInstance = new User();
+            await userInstance.PostUser(user,hash);
             return Ok("User created");
         }
 

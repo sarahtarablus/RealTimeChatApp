@@ -56,7 +56,7 @@ const LoginSignup = () => {
                 alert("Make sure to fill both username and password");
                 return false;
             } else {
-                const url = "https://localhost:5001/api/Login/PostUser";
+                const url = "https://localhost:5001/api/Users/CheckUser";
                 const response = await postMethod(url, { Name: username.toLowerCase(), Password: password.toLowerCase() })
                 if (!response.length) {
                     alert("Sorry there is no user with those credentials");
@@ -110,7 +110,7 @@ const LoginSignup = () => {
                 return false;
             } else {
                 setShow(false);
-                const url = "https://localhost:5001/api/Users";
+                const url = "https://localhost:5001/api/Users/PostUser";
                 postMethod(url, { Id: id, Name: username.toLowerCase(), Password: password.toLowerCase() })
                 setUsername("");
                 setPassword("");

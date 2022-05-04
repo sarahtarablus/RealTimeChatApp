@@ -132,7 +132,7 @@ const ChatPage = () => {
     const sendUsers = async () => {
         if (userId) {
             try {
-                const url = "https://localhost:5001/api/Login/GetUser";
+                const url = "https://localhost:5001/api/Users/GetUser";
                 let newUser = { Name: user, Id: userId };
                 postMethod(url, newUser, { "Content-type": "application/json" })
             } catch (err) { return err; }
@@ -188,7 +188,8 @@ const ChatPage = () => {
     const getMessage = () => {
         connection.on("ReceiveMessage", msg => {
             let date = msg.date.toString().split('T');
-            let newMessage = { User: msg.userName, Message: msg.message, channelId: msg.channelId, id: msg.id, Date: date[0] };
+            console.log(date);
+            let newMessage = { User: msg.userName, Message: msg.message, channelId: msg.channelId, id: msg.id, Date: date[0]};
             switch (newMessage.channelId) {
                 case 1:
                     setMessages(msg => [...msg, newMessage]);
