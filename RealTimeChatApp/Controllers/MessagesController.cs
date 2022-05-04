@@ -46,7 +46,7 @@ namespace RealTimeChatApp.Controllers
         public async Task<IActionResult> GetMessages([FromBody] ChannelId channelId)
         {
             var message = new Messages();
-            var messages = await message.getMessages(channelId);
+            var messages = await message.GetMessages(channelId);
             await _chatHub.Clients.All.SendAsync("DisplayMessages", messages);
             return Ok(messages);
         }

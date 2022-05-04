@@ -51,7 +51,7 @@ namespace RealTimeChatApp
 
 
 
-        public async Task<List<MessageFromUser>> getMessages(ChannelId channelId)
+        public async Task<List<MessageFromUser>> GetMessages(ChannelId channelId)
         {
             List<MessageFromUser> messages = new List<MessageFromUser>();
             var connectionString = "Server=127.0.0.1; Port=5432; Database=chat_app; User Id=postgres; Password=Hello1234";

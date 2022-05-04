@@ -24,6 +24,7 @@ const ChatPage = () => {
     const [inputText, setInputText] = useState("");
     const [value, setValue] = useState("");
     const [connection, setConnection] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     
 
@@ -120,6 +121,7 @@ const ChatPage = () => {
                 for (var i = 0; i < response.length; i++) {
                     let newChannel = { id: response[i].id, name: response[i].name };
                     setChannels(cha => [...cha, newChannel]);
+                    setLoading(false);
                 }
             }
         } catch (err) {
@@ -272,7 +274,7 @@ const ChatPage = () => {
    
     return (
  
-        <Page onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messagesList} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage} value={inputText}></Page>
+        <Page onClick={logOut} changeChannel={changeChannel} channelList={channels} users={users} messages={messagesList} onChange={(e) => setInputText(e.target.value)} sendMessage={sendMessage} value={inputText} loading={loading}></Page>
         );
  
 

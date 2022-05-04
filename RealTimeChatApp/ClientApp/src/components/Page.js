@@ -6,7 +6,7 @@ import ChannelPanel from './ChannelPanel';
 import InputGroup from './InputGroup';
 
 
-const Page = ({ onClick, changeChannel, channelList, users, messages, onChange, sendMessage, value }) => {
+const Page = ({ onClick, changeChannel, channelList, users, messages, onChange, sendMessage, value, loading }) => {
   
 
 
@@ -15,7 +15,7 @@ const Page = ({ onClick, changeChannel, channelList, users, messages, onChange, 
             <Header onClick={onClick}></Header>
             <div className="container-2 rounded">
                 <div className="row">
-                    <ChannelPanel onClick={changeChannel} channelList={channelList}></ChannelPanel>
+                    <ChannelPanel onClick={changeChannel} channelList={channelList} loading={loading}></ChannelPanel>
                     <Users users={users}></Users>             
                     <Messages messages={messages}></Messages>                                    
                 </div>
